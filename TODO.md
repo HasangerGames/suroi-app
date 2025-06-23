@@ -9,4 +9,4 @@
 * add isOnline function
 * make offline screen fully in compose
 * add hideSystemUI function
-* custom dialogs for all platforms in compose (alert, confirm, prompt, unload)
+* custom dialogs for all platforms in compose (alert, confirm, prompt, unload, color select)

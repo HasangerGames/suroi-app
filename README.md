@@ -1,8 +1,10 @@
+![Suroi Native](suroi_native_embed.png)
+
 <div align="center">
     <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" alt = "Kotlin">
 </div>
 
-<h1 align="center">Suroi's official native app made entirely in Kotlin Multiplatform</h1>
+<h1 align="center">Suroi's official native app, made entirely in Kotlin Multiplatform</h1>
 <div align="center">
   <img alt="Android" src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white">
   <img alt="iOS" src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white">

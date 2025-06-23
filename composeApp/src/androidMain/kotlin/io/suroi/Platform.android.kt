@@ -1,17 +1,23 @@
 package io.suroi
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Build
 import android.view.ViewGroup
+import android.view.Window
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
-
+actual typealias PlatformContext = Activity
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
+    @SuppressLint("SetJavaScriptEnabled")
     override fun configureWebView(webView: Any) {
         if (webView is WebView) {
             webView.apply {
@@ -53,11 +59,29 @@ actual fun Webview(
     AndroidView(
         factory = { context ->
             WebView(context).apply {
-                // Delegate configuration to the platform-specific method
                 getPlatform().configureWebView(this)
                 loadUrl(url)
             }
         },
         modifier = modifier
     )
+}
+
+/* todo this returns a snapshot which returns false at startup time
+actual fun isOnline(context: PlatformContext): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    val capabilities =
+        connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+
+    return capabilities?.hasTransport(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+    ?: false
+} */
+
+actual fun hideSystemUI(context: PlatformContext) {
+    val window: Window = context.window
+    val systemUI = WindowCompat.getInsetsController(window, window.decorView)
+    systemUI.hide(WindowInsetsCompat.Type.systemBars())
+    systemUI.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 }
