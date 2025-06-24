@@ -15,7 +15,7 @@ const val SCRIPT = "document.querySelector('.btn-kofi').style.display = 'none';"
 expect fun Webview(
     url: String,
     modifier: Modifier,
-    onUrlChange: (String) -> Unit
+    onURLChange: (String) -> Unit
 )
 
 expect fun isOnline(context: PlatformContext): Boolean

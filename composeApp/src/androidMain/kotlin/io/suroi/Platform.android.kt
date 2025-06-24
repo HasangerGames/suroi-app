@@ -2,10 +2,12 @@ package io.suroi
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.view.ViewGroup
 import android.view.Window
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
@@ -21,7 +23,7 @@ actual typealias PlatformContext = Activity
 actual fun Webview(
     url: String,
     modifier: Modifier,
-    onUrlChange: (String) -> Unit
+    onURLChange: (String) -> Unit
 ) {
     AndroidView(
         factory = { context ->
@@ -34,13 +36,22 @@ actual fun Webview(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                loadUrl(url)
                 webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView?, url: String?) {
+                    override fun onPageFinished(view: WebView, url: String) {
                         super.onPageFinished(view, url)
                         evaluateJavascript(SCRIPT, null)
                     }
+                    override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                        val newURL = request.url.toString()
+                        if (!newURL.contains("suroi.io")) {
+                            onURLChange(newURL)
+                            view.context.startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                            return true
+                        }
+                        return false
+                    }
                 }
+                loadUrl(url)
             }
         },
         modifier = modifier

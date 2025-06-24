@@ -66,7 +66,11 @@ fun App() {
                 }
             }
             AnimatedVisibility(showContent) {
-                Webview("https://suroi.io", modifier = Modifier.fillMaxSize(), onUrlChange = {})
+                Webview(
+                    "https://suroi.io",
+                    modifier = Modifier.fillMaxSize(),
+                    onURLChange = { showContent = false }
+                )
             }
         }
     }

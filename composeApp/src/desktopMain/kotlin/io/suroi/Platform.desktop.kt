@@ -11,7 +11,7 @@ actual class PlatformContext
 actual fun Webview(
     url: String,
     modifier: Modifier,
-    onUrlChange: (String) -> Unit
+    onURLChange: (String) -> Unit
 ) {
     WebviewKoCompose.Webview(
         url = url,
