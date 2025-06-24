@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.os.Build
 import android.view.ViewGroup
 import android.view.Window
 import android.webkit.WebView
@@ -18,41 +17,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 
 actual typealias PlatformContext = Activity
-class AndroidPlatform : Platform {
-    override val name: String = "Android ${Build.VERSION.SDK_INT}"
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun configureWebView(webView: Any) {
-        if (webView is WebView) {
-            webView.apply {
-                settings.javaScriptEnabled = true
-                settings.domStorageEnabled = true
-                WebView.setWebContentsDebuggingEnabled(true)
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
 
-                webViewClient = object : WebViewClient() {
-                    override fun onPageFinished(view: WebView, url: String) {
-                        super.onPageFinished(view, url)
-                        view.evaluateJavascript(
-                            """
-                            document.querySelectorAll('.btn-kofi').forEach(function(element) {
-                                element.style.display = 'none';
-                            });
-                            """,
-                            null
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
-
-actual fun getPlatform(): Platform = AndroidPlatform()
-
-@SuppressLint("SetJavaScriptEnabled")
 @Composable
 actual fun Webview(
     url: String,
@@ -62,12 +27,41 @@ actual fun Webview(
     AndroidView(
         factory = { context ->
             WebView(context).apply {
-                getPlatform().configureWebView(this)
+                configureWebView(webView = this)
                 loadUrl(url)
             }
         },
         modifier = modifier
     )
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+actual fun configureWebView(webView: Any) {
+    if (webView is WebView) {
+        webView.apply {
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            WebView.setWebContentsDebuggingEnabled(true)
+            layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
+
+            webViewClient = object : WebViewClient() {
+                override fun onPageFinished(view: WebView, url: String) {
+                    super.onPageFinished(view, url)
+                    view.evaluateJavascript(
+                        """
+                            document.querySelectorAll('.btn-kofi').forEach(function(element) {
+                                element.style.display = 'none';
+                            });
+                            """,
+                        null
+                    )
+                }
+            }
+        }
+    }
 }
 
 // todo this returns a snapshot which returns false at startup time

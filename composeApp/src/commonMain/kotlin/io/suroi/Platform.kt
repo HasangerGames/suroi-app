@@ -9,12 +9,6 @@ expect class PlatformContext
 val LocalPlatformContext = staticCompositionLocalOf<PlatformContext> {
     error("No PlatformContext provided")
 }
-interface Platform {
-    val name: String
-    fun configureWebView(webView: Any)
-}
-
-expect fun getPlatform(): Platform
 
 @Composable
 expect fun Webview(
@@ -22,6 +16,8 @@ expect fun Webview(
     modifier: Modifier,
     onUrlChange: (String) -> Unit
 )
+
+expect fun configureWebView(webView: Any)
 
 expect fun isOnline(context: PlatformContext): Boolean
 

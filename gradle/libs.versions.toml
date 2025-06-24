@@ -22,6 +22,8 @@ kotlinx-coroutines = "1.10.2"
 kotlinxSerialization = "1.8.1"
 ktor = "3.2.0"
 
+webViewKo = "0.6.0"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -48,6 +50,14 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+
+webViewKo = { module = "com.github.winterreisender:webviewko", version.ref = "webViewKo" }
+webViewKo-compose = { module = "com.github.winterreisender:webviewko-compose", version = "0.6.0-SNAPSHOT"}
+webViewKo-jvm = { module ="com.github.winterreisender:webviewko-jvm", version.ref = "webViewKo" }
+webViewKo-linux = { module = "com.github.winterreisender:webviewko-linux", version.ref = "webViewKo" }
+webViewKo-mingw = { module = "com.github.winterreisender:webviewko-mingw", version.ref = "webViewKo" }
+webViewKo-macos = { module = "com.github.winterreisender:webviewko-macos", version.ref = "webViewKo" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

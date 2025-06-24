@@ -12,6 +12,9 @@ plugins {
 }
 
 kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xexpect-actual-classes")
+    }
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -31,6 +34,9 @@ kotlin {
     }
 
     jvm("desktop")
+    linuxX64()
+    mingwX64()
+    macosX64()
 
     sourceSets {
         val desktopMain by getting
@@ -69,6 +75,32 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.ktor.client.cio)
+            implementation(libs.webViewKo)
+            implementation(libs.webViewKo.compose)
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.webViewKo.jvm)
+            }
+        }
+
+        linuxX64Main {
+            dependencies {
+                implementation(libs.webViewKo.linux)
+            }
+        }
+
+        mingwX64Main {
+            dependencies {
+                implementation(libs.webViewKo.mingw)
+            }
+        }
+
+        macosX64Main {
+            dependencies {
+                implementation(libs.webViewKo.macos)
+            }
         }
 
         commonTest.dependencies {

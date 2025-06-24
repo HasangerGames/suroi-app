@@ -1,7 +1,9 @@
 package io.suroi
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.github.winterreisender.webviewko.WebviewKoCompose
 
 actual class PlatformContext
 
@@ -11,6 +13,13 @@ actual fun Webview(
     modifier: Modifier,
     onUrlChange: (String) -> Unit
 ) {
+    WebviewKoCompose.Webview(
+        url = url,
+        modifier = modifier.fillMaxSize()
+    )
+}
+
+actual fun configureWebView(webView: Any) {
 }
 
 actual fun isOnline(context: PlatformContext): Boolean {
