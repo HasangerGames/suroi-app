@@ -5,14 +5,17 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.key.Key.Companion.R
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.Res
 import suroi.composeapp.generated.resources.normal
@@ -26,21 +29,41 @@ fun App() {
             TODO, make a composable function for offline screen
         } */
         var showContent by remember { mutableStateOf(false) }
-        val backgroundImage = remember { mutableStateOf(Res.drawable.normal) }
+        val backgroundImage = remember { mutableStateOf<DrawableResource?>(null) }
+        var backgroundIsLoading by remember { mutableStateOf(true) }
+
         LaunchedEffect(Unit) {
             try {
                 val mode = fetchGameMode("https://na.suroi.io/api/serverInfo")
                 backgroundImage.value = getBackgroundFromMode(mode)
             } catch (e: Exception) {
                 println("Error fetching mode: ${e.message}")
+
+
+                backgroundImage.value = Res.drawable.normal
+            } finally {
+                backgroundIsLoading = false
             }
         }
-        Image(
-            painter = painterResource(backgroundImage.value),
-            contentDescription = "Background by mode",
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+
+        if (backgroundIsLoading) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(modifier = Modifier.size(96.dp))
+            }
+        } else {
+            backgroundImage.value?.let { background ->
+                Image(
+                    painter = painterResource(background),
+                    contentDescription = "Background by mode",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxSize(),
