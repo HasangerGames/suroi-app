@@ -1,7 +1,7 @@
-![Suroi Native](suroi_native_embed.png)
-
 <div align="center">
-    <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" alt = "Kotlin">
+  <img src="suroi_native_embed.png" alt="Suroi Native">
+  <hr>
+  <img src="https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white" alt = "Kotlin">
 </div>
 
 <h1 align="center">Suroi's official native app, made entirely in Kotlin Multiplatform</h1>

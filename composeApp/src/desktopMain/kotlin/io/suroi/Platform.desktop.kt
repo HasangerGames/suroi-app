@@ -10,3 +10,10 @@ actual fun Webview(
     onUrlChange: (String) -> Unit
 ) {
 }
+
+actual fun isOnline(context: PlatformContext): Boolean {
+    TODO()
+}
+
+actual fun hideSystemUI(context: PlatformContext) {
+}

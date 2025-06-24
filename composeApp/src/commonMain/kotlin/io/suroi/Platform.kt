@@ -23,6 +23,6 @@ expect fun Webview(
     onUrlChange: (String) -> Unit
 )
 
-// expect fun isOnline(context: PlatformContext): Boolean todo
+expect fun isOnline(context: PlatformContext): Boolean
 
 expect fun hideSystemUI(context: PlatformContext)
