@@ -14,9 +14,6 @@ actual fun Webview(
 ) {
 }
 
-actual fun configureWebView(webView: Any) {
-}
-
 actual fun isOnline(context: PlatformContext): Boolean {
     TODO()
 }

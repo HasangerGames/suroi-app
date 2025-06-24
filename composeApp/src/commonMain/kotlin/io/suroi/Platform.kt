@@ -10,14 +10,13 @@ val LocalPlatformContext = staticCompositionLocalOf<PlatformContext> {
     error("No PlatformContext provided")
 }
 
+const val SCRIPT = "document.querySelector('.btn-kofi').style.display = 'none';"
 @Composable
 expect fun Webview(
     url: String,
     modifier: Modifier,
     onUrlChange: (String) -> Unit
 )
-
-expect fun configureWebView(webView: Any)
 
 expect fun isOnline(context: PlatformContext): Boolean
 

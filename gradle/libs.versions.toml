@@ -54,9 +54,6 @@ ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "kto
 webViewKo = { module = "com.github.winterreisender:webviewko", version.ref = "webViewKo" }
 webViewKo-compose = { module = "com.github.winterreisender:webviewko-compose", version = "0.6.0-SNAPSHOT"}
 webViewKo-jvm = { module ="com.github.winterreisender:webviewko-jvm", version.ref = "webViewKo" }
-webViewKo-linux = { module = "com.github.winterreisender:webviewko-linux", version.ref = "webViewKo" }
-webViewKo-mingw = { module = "com.github.winterreisender:webviewko-mingw", version.ref = "webViewKo" }
-webViewKo-macos = { module = "com.github.winterreisender:webviewko-macos", version.ref = "webViewKo" }
 
 
 [plugins]

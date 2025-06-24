@@ -34,9 +34,6 @@ kotlin {
     }
 
     jvm("desktop")
-    linuxX64()
-    mingwX64()
-    macosX64()
 
     sourceSets {
         val desktopMain by getting
@@ -82,24 +79,6 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.webViewKo.jvm)
-            }
-        }
-
-        linuxX64Main {
-            dependencies {
-                implementation(libs.webViewKo.linux)
-            }
-        }
-
-        mingwX64Main {
-            dependencies {
-                implementation(libs.webViewKo.mingw)
-            }
-        }
-
-        macosX64Main {
-            dependencies {
-                implementation(libs.webViewKo.macos)
             }
         }
 

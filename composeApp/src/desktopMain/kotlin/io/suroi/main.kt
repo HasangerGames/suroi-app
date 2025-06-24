@@ -10,7 +10,8 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "Suroi",
-        state = WindowState(placement = WindowPlacement.Fullscreen)
+        state = WindowState(placement = WindowPlacement.Maximized),
+        undecorated = true,
     ) {
         val desktopPlatformContext = PlatformContext()
         CompositionLocalProvider(LocalPlatformContext provides desktopPlatformContext) {

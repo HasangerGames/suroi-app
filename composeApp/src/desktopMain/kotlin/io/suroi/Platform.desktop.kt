@@ -15,11 +15,9 @@ actual fun Webview(
 ) {
     WebviewKoCompose.Webview(
         url = url,
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        init = "document.addEventListener('DOMContentLoaded', function() { $SCRIPT });"
     )
-}
-
-actual fun configureWebView(webView: Any) {
 }
 
 actual fun isOnline(context: PlatformContext): Boolean {

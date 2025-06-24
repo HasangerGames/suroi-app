@@ -1,6 +1,5 @@
 package io.suroi
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.net.ConnectivityManager
@@ -27,41 +26,25 @@ actual fun Webview(
     AndroidView(
         factory = { context ->
             WebView(context).apply {
-                configureWebView(webView = this)
+                settings.domStorageEnabled = true
+                settings.javaScriptEnabled = true
+                settings.useWideViewPort = true
+                settings.loadWithOverviewMode = true
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
                 loadUrl(url)
+                webViewClient = object : WebViewClient() {
+                    override fun onPageFinished(view: WebView?, url: String?) {
+                        super.onPageFinished(view, url)
+                        evaluateJavascript(SCRIPT, null)
+                    }
+                }
             }
         },
         modifier = modifier
     )
-}
-
-@SuppressLint("SetJavaScriptEnabled")
-actual fun configureWebView(webView: Any) {
-    if (webView is WebView) {
-        webView.apply {
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            WebView.setWebContentsDebuggingEnabled(true)
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-
-            webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    view.evaluateJavascript(
-                        """
-                            document.querySelectorAll('.btn-kofi').forEach(function(element) {
-                                element.style.display = 'none';
-                            });
-                            """,
-                        null
-                    )
-                }
-            }
-        }
-    }
 }
 
 // todo this returns a snapshot which returns false at startup time
