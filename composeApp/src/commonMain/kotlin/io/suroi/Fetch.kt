@@ -7,11 +7,6 @@ import io.ktor.client.request.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import suroi.composeapp.generated.resources.Res
-import suroi.composeapp.generated.resources.fall
-import suroi.composeapp.generated.resources.infection
-import suroi.composeapp.generated.resources.normal
-import suroi.composeapp.generated.resources.winter
 
 fun ktorClient(): HttpClient {
     return HttpClient {
@@ -43,15 +38,5 @@ suspend fun fetchGameMode(url: String): String {
         return response.mode
     } finally {
         client.close()
-    }
-}
-
-fun getBackgroundFromMode(mode: String): org.jetbrains.compose.resources.DrawableResource {
-    return when (mode) {
-        "normal" -> Res.drawable.normal
-        "fall" -> Res.drawable.fall
-        "infection" -> Res.drawable.infection
-        "winter" -> Res.drawable.winter
-        else -> Res.drawable.normal
     }
 }

@@ -1,7 +1,6 @@
 package io.suroi
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,10 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
-import suroi.composeapp.generated.resources.Res
-import suroi.composeapp.generated.resources.normal
+import coil3.compose.AsyncImage
 
 @Composable
 fun App() {
@@ -29,23 +25,18 @@ fun App() {
             TODO, make a composable function for offline screen
         } */
         var showContent by remember { mutableStateOf(false) }
-        val backgroundImage = remember { mutableStateOf<DrawableResource?>(null) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
-
+        val backgroundImageURL = remember { mutableStateOf<String?>(null) }
         LaunchedEffect(Unit) {
             try {
                 val mode = fetchGameMode("https://na.suroi.io/api/serverInfo")
-                backgroundImage.value = getBackgroundFromMode(mode)
+                backgroundImageURL.value = "https://suroi.io/img/backgrounds/menu/${mode}.png"
             } catch (e: Exception) {
                 println("Error fetching mode: ${e.message}")
-
-
-                backgroundImage.value = Res.drawable.normal
             } finally {
                 backgroundIsLoading = false
             }
         }
-
         if (backgroundIsLoading) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -55,14 +46,11 @@ fun App() {
                 CircularProgressIndicator(modifier = Modifier.size(96.dp))
             }
         } else {
-            backgroundImage.value?.let { background ->
-                Image(
-                    painter = painterResource(background),
-                    contentDescription = "Background by mode",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            AsyncImage(
+                model = backgroundImageURL.value,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+            )
         }
         Column(
             modifier = Modifier
