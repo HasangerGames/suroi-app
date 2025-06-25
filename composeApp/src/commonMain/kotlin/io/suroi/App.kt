@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,11 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.suroi.ui.theme.SuroiTheme
 
 @Composable
 fun App() {
     hideSystemUI(LocalPlatformContext.current)
-    MaterialTheme {
+    SuroiTheme {
         /* if (!isOnline(LocalPlatformContext.current)) {
             Text(text = "no internet")
             TODO, make a composable function for offline screen
