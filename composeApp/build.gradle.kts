@@ -64,7 +64,7 @@ kotlin {
             implementation(libs.ktor.client.android)
         }
 
-        iosMain.dependencies {
+        appleMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
 
