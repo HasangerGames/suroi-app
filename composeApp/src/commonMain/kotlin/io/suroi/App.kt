@@ -18,7 +18,6 @@ import io.suroi.ui.theme.SuroiTheme
 
 @Composable
 fun App() {
-    hideSystemUI(LocalPlatformContext.current)
     SuroiTheme {
         /* if (!isOnline(LocalPlatformContext.current)) {
             Text(text = "no internet")
