@@ -15,17 +15,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.suroi.ui.theme.SuroiTheme
+import kotlinx.coroutines.launch
 
 @Composable
 fun App() {
     SuroiTheme {
-        /* if (!isOnline(LocalPlatformContext.current)) {
-            Text(text = "no internet")
-            TODO, make a composable function for offline screen
-        } */
         var showContent by remember { mutableStateOf(false) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
         val backgroundImageURL = remember { mutableStateOf<String?>(null) }
+
+        var connecting by remember { mutableStateOf(false) }
+        var showOfflineScreen by remember { mutableStateOf(false) }
+        val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             try {
                 val mode = fetchGameMode("https://na.suroi.io/api/serverInfo")
@@ -36,7 +37,7 @@ fun App() {
                 backgroundIsLoading = false
             }
         }
-        if (backgroundIsLoading) {
+        if (backgroundIsLoading || connecting) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,10 +58,29 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            if (!showContent) {
+            if (showOfflineScreen) {
+                Text(text = "You're offline")
                 Button(onClick = {
-                    showContent = !showContent
+                    showOfflineScreen = false
                 }) {
+                    Text("Retry")
+                }
+            } else if (!showContent) {
+                Button(
+                    onClick = {
+                        showOfflineScreen = false
+                        connecting = true
+                        coroutineScope.launch {
+                            if (isOnline()) {
+                                showContent = true
+                            } else {
+                                showOfflineScreen = true
+                            }
+                        }
+                        connecting = false
+                    },
+                    enabled = !connecting
+                ) {
                     Text("Let's play")
                 }
             }

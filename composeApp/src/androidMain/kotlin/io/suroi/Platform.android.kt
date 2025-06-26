@@ -1,5 +1,6 @@
 package io.suroi
 
+import android.app.Activity
 import android.content.Intent
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
@@ -8,6 +9,8 @@ import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+
+actual typealias PlatformContext = Activity
 
 @Composable
 actual fun Webview(
@@ -46,8 +49,4 @@ actual fun Webview(
         },
         modifier = modifier
     )
-}
-
-actual fun isOnline(): Boolean {
-    TODO()
 }

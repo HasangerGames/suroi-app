@@ -4,6 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -30,12 +31,23 @@ data class ServerInfo(
     val modeSwitchTime: Long? = null
 )
 
-
 suspend fun fetchGameMode(url: String): String {
     val client = ktorClient()
     try {
         val response: ServerInfo = client.get(url).body()
         return response.mode
+    } finally {
+        client.close()
+    }
+}
+
+suspend fun isOnline(): Boolean {
+    val client = ktorClient()
+    return try {
+        val response = client.head("https://www.google.com/generate_204")
+        response.status.isSuccess()
+    } catch (e: Exception) {
+        false
     } finally {
         client.close()
     }

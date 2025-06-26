@@ -5,6 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.winterreisender.webviewko.WebviewKoCompose
 
+actual class PlatformContext
+
 @Composable
 actual fun Webview(
     url: String,
@@ -16,8 +18,4 @@ actual fun Webview(
         modifier = modifier.fillMaxSize(),
         init = "document.addEventListener('DOMContentLoaded', function() { $SCRIPT });"
     )
-}
-
-actual fun isOnline(): Boolean {
-    TODO()
 }
