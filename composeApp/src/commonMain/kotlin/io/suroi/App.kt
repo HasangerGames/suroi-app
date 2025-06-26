@@ -49,6 +49,7 @@ fun App() {
             AsyncImage(
                 model = backgroundImageURL.value,
                 contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
         }
@@ -88,6 +89,7 @@ fun App() {
                 Webview(
                     "https://suroi.io",
                     modifier = Modifier.fillMaxSize(),
+                    script = "document.querySelector('.btn-kofi').style.display = 'none';",
                     onURLChange = { showContent = false }
                 )
             }

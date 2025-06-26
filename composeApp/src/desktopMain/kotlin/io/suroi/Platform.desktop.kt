@@ -11,11 +11,12 @@ actual class PlatformContext
 actual fun Webview(
     url: String,
     modifier: Modifier,
+    script: String,
     onURLChange: (String) -> Unit
 ) {
     WebviewKoCompose.Webview(
         url = url,
         modifier = modifier.fillMaxSize(),
-        init = "document.addEventListener('DOMContentLoaded', function() { $SCRIPT });"
+        init = "document.addEventListener('DOMContentLoaded', function() { $script });"
     )
 }

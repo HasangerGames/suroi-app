@@ -10,6 +10,7 @@ actual typealias PlatformContext = UIDevice
 actual fun Webview(
     url: String,
     modifier: Modifier,
+    script: String,
     onURLChange: (String) -> Unit
 ) {
 }

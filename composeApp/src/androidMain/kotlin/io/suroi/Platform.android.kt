@@ -16,6 +16,7 @@ actual typealias PlatformContext = Activity
 actual fun Webview(
     url: String,
     modifier: Modifier,
+    script: String,
     onURLChange: (String) -> Unit
 ) {
     AndroidView(
@@ -32,7 +33,7 @@ actual fun Webview(
                 webViewClient = object : WebViewClient() {
                     override fun onPageFinished(view: WebView, url: String) {
                         super.onPageFinished(view, url)
-                        evaluateJavascript(SCRIPT, null)
+                        evaluateJavascript(script, null)
                     }
                     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                         val newURL = request.url.toString()
