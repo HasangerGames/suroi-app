@@ -44,7 +44,7 @@ suspend fun fetchGameMode(url: String): String {
 suspend fun isOnline(): Boolean {
     val client = ktorClient()
     return try {
-        val response = client.head("https://www.google.com/generate_204")
+        val response = client.head("https://suroi.io")
         response.status.isSuccess()
     } catch (e: Exception) {
         false
