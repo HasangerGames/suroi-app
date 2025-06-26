@@ -26,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://maven.mozilla.org/maven2/")
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
         maven("https://gitlab.com/api/v4/projects/38224197/packages/maven")
     }

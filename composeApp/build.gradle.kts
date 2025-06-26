@@ -18,7 +18,7 @@ kotlin {
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_23)
+            jvmTarget.set(JvmTarget.valueOf("JVM_" + libs.versions.java.get()))
         }
     }
 
@@ -62,6 +62,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.android)
+            implementation(libs.geckoview.omni)
         }
 
         appleMain.dependencies {
@@ -110,8 +111,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_24
-        targetCompatibility = JavaVersion.VERSION_24
+        sourceCompatibility = JavaVersion.valueOf("VERSION_" + libs.versions.java.get())
+        targetCompatibility = JavaVersion.valueOf("VERSION_" + libs.versions.java.get())
     }
 }
 

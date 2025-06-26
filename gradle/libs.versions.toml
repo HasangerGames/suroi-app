@@ -11,6 +11,10 @@ coil = "3.2.0"
 composeHotReload = "1.0.0-alpha11"
 composeMultiplatform = "1.8.2"
 
+geckoview = "139.0.20250523173407"
+
+java = "24"
+
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.8.1"
@@ -26,6 +30,8 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil"}
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil"}
+geckoview-omni = { module = "org.mozilla.geckoview:geckoview-omni", version.ref = "geckoview" }
+
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
