@@ -96,17 +96,3 @@ fun App() {
         }
     }
 }
-
-/* enum class DialogType { todo
-    ALERT,
-    CONFIRM,
-    PROMPT,
-    UNLOAD
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Preview
-@Composable
-fun Dialog(modifier: Modifier = Modifier) {
-    var abc by remember { mutableStateOf(false) }
-    BasicAlertDialog({ abc = !abc }, modifier = modifier) {}
-} */
