@@ -86,7 +86,7 @@ fun App() {
                         },
                         enabled = !connecting
                     ) {
-                        Text("Let's play")
+                        Text("Play")
                     }
                 }
                 AnimatedVisibility(showContent) {
@@ -98,44 +98,34 @@ fun App() {
                     )
                 }
             }
-            Box(
+            AnimatedVisibility(
+                visible = !showContent,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .padding(16.dp)
-                    .background(
-                        color = DarkTransparent,
-                        shape = RoundedCornerShape(24.dp)
-                    )
-            ) {
-                IconButton(
-                    onClick = {
-                        println("settings clicked")
-                    },
+                    .padding(16.dp)) {
+                Box(
                     modifier = Modifier
-                        .size(48.dp)
-                        .padding(4.dp)
+                        .background(
+                            color = DarkTransparent,
+                            shape = RoundedCornerShape(24.dp)
+                        )
                 ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.settings),
-                        contentDescription = "settings",
-                        tint = White,
-                        modifier = Modifier,
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        println("settings clicked")
-                    },
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.settings),
-                        contentDescription = "settings",
-                        tint = White,
-                        modifier = Modifier,
-                    )
+                    IconButton(
+                        onClick = {
+                            println("settings clicked")
+                        },
+                        modifier = Modifier
+                            .size(48.dp)
+                            .padding(4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(Res.drawable.settings),
+                            contentDescription = "settings",
+                            tint = White,
+                            modifier = Modifier,
+                        )
+                    }
+
                 }
             }
         }

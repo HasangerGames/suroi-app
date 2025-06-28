@@ -1,5 +1,6 @@
 package io.suroi
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.ViewGroup
 import android.webkit.WebResourceRequest
@@ -8,11 +9,13 @@ import android.webkit.WebViewClient
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import org.mozilla.geckoview.GeckoResult
 import org.mozilla.geckoview.GeckoRuntime
 import org.mozilla.geckoview.GeckoSession
 import org.mozilla.geckoview.GeckoView
 
+@SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun AndroidWebview(
     url: String,
@@ -88,7 +91,7 @@ fun GeckoWebview(
                 override fun onNewSession(session: GeckoSession, uri: String): GeckoResult<GeckoSession?>? {
                     if (!uri.startsWith("https://suroi.io")) {
                         onURLChange(uri)
-                        context.startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(uri)))
+                        context.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
                         return null
                     }
                     return null
