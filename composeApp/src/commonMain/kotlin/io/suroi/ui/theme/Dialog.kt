@@ -33,7 +33,7 @@ fun Dialog(
     onCancel: () -> Unit = {}
 ) {
     var promptInput by remember { mutableStateOf("") }
-    val scrollState = rememberScrollState()
+    val promptScrollState = rememberScrollState()
 
     BasicAlertDialog(
         onDismissRequest = onDismissRequest,
@@ -56,7 +56,9 @@ fun Dialog(
                         color = White,
                         fontSize = 24.sp,
                     ),
-                    modifier = Modifier.padding(bottom = 12.dp).align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
 
                 Text(
@@ -65,7 +67,9 @@ fun Dialog(
                         color = White.copy(alpha = 0.5f),
                         fontSize = 14.sp
                     ),
-                    modifier = Modifier.padding(bottom = 16.dp)
+                    modifier = Modifier
+                        .padding(bottom = 16.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
                 if (type == DialogType.Prompt) {
                     BasicTextField(
@@ -75,9 +79,9 @@ fun Dialog(
                         cursorBrush = SolidColor(Orange),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 6.dp)
+                            .padding(4.dp)
                             .heightIn(min = 32.dp, max = 128.dp)
-                            .verticalScroll(scrollState)
+                            .verticalScroll(promptScrollState)
                             .background(DarkTransparent, RoundedCornerShape(8.dp))
                             .border(
                                 BorderStroke(2.dp, Orange),
@@ -115,7 +119,7 @@ fun Dialog(
                         border = BorderStroke(2.dp, Orange)
                     ) {
                         Text(
-                            if (type == DialogType.Unload) "Leave/Reload" else "OK",
+                            if (type == DialogType.Unload) "Leave" else "OK",
                             style = TextStyle(fontSize = 14.sp))
                     }
 
@@ -127,7 +131,7 @@ fun Dialog(
                                 contentColor = Orange,
                             ),
                             shape = RoundedCornerShape(20.dp),
-                            border = BorderStroke(1.5.dp, Orange)
+                            border = BorderStroke(2.dp, Orange)
                         ) {
                             Text("Cancel", style = TextStyle(fontSize = 14.sp))
                         }

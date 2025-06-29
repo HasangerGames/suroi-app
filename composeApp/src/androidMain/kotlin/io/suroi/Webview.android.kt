@@ -3,13 +3,12 @@ package io.suroi
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.view.ViewGroup
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
+import io.suroi.ui.theme.DialogType
 import org.mozilla.geckoview.GeckoResult
 import org.mozilla.geckoview.GeckoRuntime
 import org.mozilla.geckoview.GeckoSession
@@ -21,7 +20,16 @@ fun AndroidWebview(
     url: String,
     modifier: Modifier,
     script: String,
-    onURLChange: (String) -> Unit
+    onURLChange: (String) -> Unit,
+    onDialog: (
+        DialogType,
+        String,
+        String,
+        String,
+        (String?) -> Unit,
+        () -> Unit,
+        () -> Unit
+    ) -> Unit
 ) {
     AndroidView(
         factory = { context ->
@@ -50,6 +58,59 @@ fun AndroidWebview(
                             return true
                         }
                         return false
+                    }
+                }
+                webChromeClient = object : WebChromeClient() {
+                    override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
+                        onDialog(
+                            DialogType.Alert,
+                            "Alert",
+                            message ?: "",
+                            "",
+                            { result?.confirm() },
+                            {},
+                            { result?.confirm() }
+                        )
+                        return true
+                    }
+                    override fun onJsConfirm(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
+                        onDialog(
+                            DialogType.Confirm,
+                            "Confirm",
+                            message ?: "",
+                            "",
+                            { result?.confirm() },
+                            { result?.cancel() },
+                            { result?.cancel() }
+                        )
+                        return true
+                    }
+                    override fun onJsPrompt(view: WebView?, url: String?, message: String?, defaultValue: String?, result: JsPromptResult?): Boolean {
+                        onDialog(
+                            DialogType.Prompt,
+                            "Prompt",
+                            message ?: "",
+                            defaultValue ?: "",
+                            { input ->
+                                if (input != null) result?.confirm(input)
+                                else result?.cancel()
+                            },
+                            { result?.cancel() },
+                            { result?.cancel() }
+                        )
+                        return true
+                    }
+                    override fun onJsBeforeUnload(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
+                        onDialog(
+                            DialogType.Unload,
+                            "Leave page?",
+                            message ?: "Changes you made may not be saved.",
+                            "",
+                            { result?.confirm() },
+                            { result?.cancel() },
+                            { result?.cancel() }
+                        )
+                        return true
                     }
                 }
                 loadUrl(url)
