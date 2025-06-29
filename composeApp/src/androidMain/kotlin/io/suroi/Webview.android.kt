@@ -9,10 +9,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import io.suroi.ui.theme.DialogType
-import org.mozilla.geckoview.GeckoResult
-import org.mozilla.geckoview.GeckoRuntime
-import org.mozilla.geckoview.GeckoSession
-import org.mozilla.geckoview.GeckoView
+import kotlinx.coroutines.CompletableDeferred
+import org.mozilla.geckoview.*
+import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.NEGATIVE
+import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.POSITIVE
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -125,7 +125,16 @@ fun GeckoWebview(
     url: String,
     modifier: Modifier,
     script: String,
-    onURLChange: (String) -> Unit
+    onURLChange: (String) -> Unit,
+    onDialog: (
+        DialogType,
+        String,
+        String,
+        String,
+        (String?) -> Unit,
+        () -> Unit,
+        () -> Unit
+    ) -> Unit
 ) {
     AndroidView(
         factory = { context ->
@@ -133,9 +142,9 @@ fun GeckoWebview(
             val runtime = GeckoRuntime.create(context)
             val session = GeckoSession()
 
-            session.setContentDelegate(object : GeckoSession.ContentDelegate {})
+            session.contentDelegate = object : GeckoSession.ContentDelegate {}
 
-            session.setProgressDelegate(object : GeckoSession.ProgressDelegate {
+            session.progressDelegate = object : GeckoSession.ProgressDelegate {
                 override fun onPageStop(session: GeckoSession, success: Boolean) {
                     if (success) {
                         session.loadUri("javascript:(function() { $script } })();")
@@ -143,7 +152,73 @@ fun GeckoWebview(
                         println("unsuccessful page stop")
                     }
                 }
-            })
+            }
+
+            session.promptDelegate = object : GeckoSession.PromptDelegate {
+                val deferredResponse = CompletableDeferred<GeckoSession.PromptDelegate.PromptResponse?>()
+                override fun onAlertPrompt(
+                    session: GeckoSession,
+                    prompt: GeckoSession.PromptDelegate.AlertPrompt
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                    onDialog(
+                        DialogType.Alert,
+                        "Alert",
+                        prompt.message ?: "",
+                        "",
+                        { deferredResponse.complete(prompt.dismiss()) },
+                        {},
+                        { deferredResponse.complete(prompt.dismiss()) }
+                    )
+                    return super.onAlertPrompt(session, prompt)
+                }
+                override fun onButtonPrompt(
+                    session: GeckoSession,
+                    prompt: GeckoSession.PromptDelegate.ButtonPrompt
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                    onDialog(
+                        DialogType.Confirm,
+                        "Confirm",
+                        prompt.message ?: "",
+                        "",
+                        { deferredResponse.complete(prompt.confirm(POSITIVE)) },
+                        { deferredResponse.complete(prompt.confirm(NEGATIVE)) },
+                        { deferredResponse.complete(prompt.dismiss()) }
+                    )
+                    return super.onButtonPrompt(session, prompt)
+                }
+                // TODO() text prompt does not show up at all
+                override fun onTextPrompt(
+                    session: GeckoSession,
+                    prompt: GeckoSession.PromptDelegate.TextPrompt
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                    onDialog(
+                        DialogType.Prompt,
+                        "Prompt",
+                        prompt.message ?: "",
+                        prompt.defaultValue ?: "",
+                        { input -> deferredResponse.complete(prompt.confirm(input ?: "")) },
+                        { deferredResponse.complete(prompt.dismiss()) },
+                        { deferredResponse.complete(prompt.dismiss()) }
+                    )
+                    return super.onTextPrompt(session, prompt)
+                }
+                override fun onBeforeUnloadPrompt(
+                    session: GeckoSession,
+                    prompt: GeckoSession.PromptDelegate.BeforeUnloadPrompt
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                    onDialog(
+                        DialogType.Unload,
+                        prompt.title ?: "Reload page?",
+                        "Changes you made may not be saved.",
+                        "",
+                        // TODO() pressing OK button does nothing here
+                        { deferredResponse.complete(prompt.confirm(AllowOrDeny.ALLOW)) },
+                        { deferredResponse.complete(prompt.confirm(AllowOrDeny.DENY)) },
+                        { deferredResponse.complete(prompt.dismiss()) }
+                    )
+                    return super.onBeforeUnloadPrompt(session, prompt)
+                }
+            }
 
             session.open(runtime)
             geckoView.setSession(session)

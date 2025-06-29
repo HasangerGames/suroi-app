@@ -25,7 +25,7 @@ enum class DialogType {
 @Composable
 fun Dialog(
     type: DialogType = DialogType.Alert,
-    title: String = type.toString(),
+    title: String,
     message: String,
     defaultValue: String = "",
     onDismissRequest: () -> Unit = {},
@@ -119,7 +119,7 @@ fun Dialog(
                         border = BorderStroke(2.dp, Orange)
                     ) {
                         Text(
-                            if (type == DialogType.Unload) "Leave" else "OK",
+                            if (type == DialogType.Unload) "Reload" else "OK",
                             style = TextStyle(fontSize = 14.sp))
                     }
 

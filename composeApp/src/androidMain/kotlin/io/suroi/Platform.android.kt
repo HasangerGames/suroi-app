@@ -54,7 +54,7 @@ actual fun Webview(
         }
 
     if (isWearOS || below10) {
-        GeckoWebview(url, modifier, script, onURLChange)
+        GeckoWebview(url, modifier, script, onURLChange, onDialog = showCustomDialog)
     } else {
         AndroidWebview(url, modifier, script, onURLChange, onDialog = showCustomDialog)
     }
