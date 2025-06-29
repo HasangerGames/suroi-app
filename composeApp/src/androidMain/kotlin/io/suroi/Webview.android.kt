@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
 import io.suroi.ui.theme.DialogType
-import kotlinx.coroutines.CompletableDeferred
 import org.mozilla.geckoview.*
 import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.NEGATIVE
 import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.POSITIVE
@@ -155,68 +154,69 @@ fun GeckoWebview(
             }
 
             session.promptDelegate = object : GeckoSession.PromptDelegate {
-                val deferredResponse = CompletableDeferred<GeckoSession.PromptDelegate.PromptResponse?>()
                 override fun onAlertPrompt(
                     session: GeckoSession,
                     prompt: GeckoSession.PromptDelegate.AlertPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
+                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
                     onDialog(
                         DialogType.Alert,
                         "Alert",
                         prompt.message ?: "",
                         "",
-                        { deferredResponse.complete(prompt.dismiss()) },
+                        { result.complete(prompt.dismiss()) },
                         {},
-                        { deferredResponse.complete(prompt.dismiss()) }
+                        { result.complete(prompt.dismiss()) }
                     )
-                    return super.onAlertPrompt(session, prompt)
+                    return result
                 }
                 override fun onButtonPrompt(
                     session: GeckoSession,
                     prompt: GeckoSession.PromptDelegate.ButtonPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
+                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
                     onDialog(
                         DialogType.Confirm,
                         "Confirm",
                         prompt.message ?: "",
                         "",
-                        { deferredResponse.complete(prompt.confirm(POSITIVE)) },
-                        { deferredResponse.complete(prompt.confirm(NEGATIVE)) },
-                        { deferredResponse.complete(prompt.dismiss()) }
+                        { result.complete(prompt.confirm(POSITIVE)) },
+                        { result.complete(prompt.confirm(NEGATIVE)) },
+                        { result.complete(prompt.dismiss()) }
                     )
-                    return super.onButtonPrompt(session, prompt)
+                    return result
                 }
-                // TODO() text prompt does not show up at all
                 override fun onTextPrompt(
                     session: GeckoSession,
                     prompt: GeckoSession.PromptDelegate.TextPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
+                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
                     onDialog(
                         DialogType.Prompt,
                         "Prompt",
                         prompt.message ?: "",
                         prompt.defaultValue ?: "",
-                        { input -> deferredResponse.complete(prompt.confirm(input ?: "")) },
-                        { deferredResponse.complete(prompt.dismiss()) },
-                        { deferredResponse.complete(prompt.dismiss()) }
+                        { input -> result.complete(prompt.confirm(input ?: "")) },
+                        { result.complete(prompt.dismiss()) },
+                        { result.complete(prompt.dismiss()) }
                     )
-                    return super.onTextPrompt(session, prompt)
+                    return result
                 }
                 override fun onBeforeUnloadPrompt(
                     session: GeckoSession,
                     prompt: GeckoSession.PromptDelegate.BeforeUnloadPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>? {
+                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
+                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
                     onDialog(
                         DialogType.Unload,
                         prompt.title ?: "Reload page?",
                         "Changes you made may not be saved.",
                         "",
-                        // TODO() pressing OK button does nothing here
-                        { deferredResponse.complete(prompt.confirm(AllowOrDeny.ALLOW)) },
-                        { deferredResponse.complete(prompt.confirm(AllowOrDeny.DENY)) },
-                        { deferredResponse.complete(prompt.dismiss()) }
+                        { result.complete(prompt.confirm(AllowOrDeny.ALLOW)) },
+                        { result.complete(prompt.confirm(AllowOrDeny.DENY)) },
+                        { result.complete(prompt.dismiss()) }
                     )
-                    return super.onBeforeUnloadPrompt(session, prompt)
+                    return result
                 }
             }
 
