@@ -1,6 +1,6 @@
 package io.suroi
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,10 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.suroi.ui.theme.DarkTransparent
-import io.suroi.ui.theme.Gray
-import io.suroi.ui.theme.SuroiTheme
-import io.suroi.ui.theme.White
+import io.suroi.ui.theme.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.Res
@@ -57,46 +54,46 @@ fun App() {
                     contentScale = ContentScale.Crop,
                 )
             }
-            Column(
-                modifier = Modifier
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                if (showOfflineScreen) {
-                    Text(text = "You're offline")
-                    Button(onClick = {
+
+            if (showOfflineScreen) {
+                OfflineScreen (onRetry = {
+                    connecting = true
+                    coroutineScope.launch { showOfflineScreen = !isOnline() }
+                    connecting = false
+                }
+                )
+            } else if (!showContent) {
+                Button(
+                    modifier = Modifier.align(Alignment.Center),
+                    onClick = {
                         showOfflineScreen = false
-                    }) {
-                        Text("Retry")
-                    }
-                } else if (!showContent) {
-                    Button(
-                        onClick = {
-                            showOfflineScreen = false
-                            connecting = true
-                            coroutineScope.launch {
-                                if (isOnline()) {
-                                    showContent = true
-                                } else {
-                                    showOfflineScreen = true
-                                }
+                        connecting = true
+                        coroutineScope.launch {
+                            if (isOnline()) {
+                                showContent = true
+                            } else {
+                                showOfflineScreen = true
                             }
-                            connecting = false
-                        },
-                        enabled = !connecting
-                    ) {
-                        Text("Play")
-                    }
+                        }
+                        connecting = false
+                    },
+                    enabled = !connecting
+                ) {
+                    Text("Play")
                 }
-                AnimatedVisibility(showContent) {
-                    Webview(
-                        "https://suroi.io",
-                        modifier = Modifier.fillMaxSize(),
-                        script = "document.querySelector('.btn-kofi').style.display = 'none';",
-                        onURLChange = { showContent = false }
-                    )
-                }
+            }
+            AnimatedVisibility(
+                visible = showContent,
+                modifier = Modifier.align(Alignment.Center),
+                enter = fadeIn() + expandVertically (),
+                exit = fadeOut() + shrinkVertically()
+            ) {
+                Webview(
+                    "https://suroi.io",
+                    modifier = Modifier.fillMaxSize(),
+                    script = "document.querySelector('.btn-kofi').style.display = 'none';",
+                    onURLChange = { showContent = false }
+                )
             }
             AnimatedVisibility(
                 visible = !showContent,
