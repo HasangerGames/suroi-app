@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.winterreisender.webviewko.WebviewKoCompose
-
-actual class PlatformContext
+import java.util.Locale
 
 @Composable
 actual fun Webview(
@@ -19,4 +18,8 @@ actual fun Webview(
         modifier = modifier.fillMaxSize(),
         init = "document.addEventListener('DOMContentLoaded', function() { $script });"
     )
+}
+
+actual fun getDeviceLanguage(): String {
+    return Locale.getDefault().language
 }

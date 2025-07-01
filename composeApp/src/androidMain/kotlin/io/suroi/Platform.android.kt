@@ -1,6 +1,5 @@
 package io.suroi
 
-import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.compose.runtime.*
@@ -8,8 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import io.suroi.ui.theme.Dialog
 import io.suroi.ui.theme.DialogType
-
-actual typealias PlatformContext = Activity
+import java.util.*
 
 @Composable
 actual fun Webview(
@@ -70,4 +68,8 @@ actual fun Webview(
             onCancel = onDialogCancel
         )
     }
+}
+
+actual fun getDeviceLanguage(): String {
+    return Locale.getDefault().language
 }

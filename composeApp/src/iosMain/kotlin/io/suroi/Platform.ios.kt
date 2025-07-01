@@ -4,13 +4,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
-import platform.Foundation.NSURL
-import platform.Foundation.NSURLRequest
-import platform.UIKit.UIDevice
+import platform.Foundation.*
 import platform.UIKit.UIView
 import platform.WebKit.WKWebView
-
-actual typealias PlatformContext = UIDevice
 
 @Composable
 actual fun Webview(
@@ -27,4 +23,8 @@ actual fun Webview(
         },
         modifier = Modifier.fillMaxSize()
     )
+}
+
+actual fun getDeviceLanguage(): String {
+    return NSLocale.currentLocale.languageCode
 }

@@ -3,8 +3,6 @@ package io.suroi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
-expect class PlatformContext
-
 @Composable
 expect fun Webview(
     url: String,
@@ -12,3 +10,5 @@ expect fun Webview(
     script: String,
     onURLChange: (String) -> Unit
 )
+
+expect fun getDeviceLanguage(): String
