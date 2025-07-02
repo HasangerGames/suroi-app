@@ -20,6 +20,7 @@ import suroi.composeapp.generated.resources.settings
 @Composable
 fun App() {
     SuroiTheme {
+        lateinit var serverInfo: ServerInfo
         var showContent by remember { mutableStateOf(false) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
         val backgroundImageURL = remember { mutableStateOf<String?>(null) }
@@ -28,8 +29,9 @@ fun App() {
         var showOfflineScreen by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
+            serverInfo = getServerInfo("https://na.suroi.io/api/serverInfo")
             try {
-                val mode = fetchGameMode("https://na.suroi.io/api/serverInfo")
+                val mode = serverInfo.mode
                 backgroundImageURL.value = "https://suroi.io/img/backgrounds/menu/${mode}.png"
             } catch (e: Exception) {
                 println("Error fetching mode: ${e.message}")
@@ -108,9 +110,7 @@ fun App() {
                         )
                 ) {
                     IconButton(
-                        onClick = {
-                            println("settings clicked")
-                        },
+                        onClick = {},
                         modifier = Modifier
                             .size(48.dp)
                             .padding(4.dp)

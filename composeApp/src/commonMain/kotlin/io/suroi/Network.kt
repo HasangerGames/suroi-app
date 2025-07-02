@@ -4,7 +4,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
-import io.ktor.http.isSuccess
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -21,21 +21,14 @@ fun ktorClient(): HttpClient {
 }
 @Serializable
 data class ServerInfo(
-    val protocolVersion: Int? = null,
-    val playerCount: Int? = null,
-    val teamSize: Int? = null,
-    val nextTeamSize: Int? = null,
-    val teamSizeSwitchTime: Long? = null,
-    val mode: String,
-    val nextMode: String? = null,
-    val modeSwitchTime: Long? = null
+    val playerCount: Int,
+    val teamSize: Int,
+    val mode: String
 )
-
-suspend fun fetchGameMode(url: String): String {
+suspend fun getServerInfo(url: String): ServerInfo {
     val client = ktorClient()
     try {
-        val response: ServerInfo = client.get(url).body()
-        return response.mode
+        return client.get(url).body()
     } finally {
         client.close()
     }
