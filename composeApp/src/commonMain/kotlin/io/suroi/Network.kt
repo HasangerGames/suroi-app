@@ -22,7 +22,7 @@ fun ktorClient(): HttpClient {
 @Serializable
 data class ServerInfo(
     val playerCount: Int,
-    val teamSize: Int,
+    val teamMode: Int,
     val mode: String
 )
 suspend fun getServerInfo(url: String): ServerInfo {

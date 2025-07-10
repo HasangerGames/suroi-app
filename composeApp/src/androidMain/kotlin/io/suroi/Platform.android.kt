@@ -1,10 +1,7 @@
 package io.suroi
 
-import android.content.pm.PackageManager
-import android.os.Build
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import io.suroi.ui.theme.Dialog
 import io.suroi.ui.theme.DialogType
 import java.util.*
@@ -16,11 +13,6 @@ actual fun Webview(
     script: String,
     onURLChange: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    val isWearOS = context.packageManager.hasSystemFeature(PackageManager.FEATURE_WATCH)
-            || (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && Build.DEVICE.contains("wear"))
-    val below10 = Build.VERSION.SDK_INT < Build.VERSION_CODES.R
-
     var showDialog by remember { mutableStateOf(false) }
     var dialogType by remember { mutableStateOf(DialogType.Alert) }
     var dialogTitle by remember { mutableStateOf("") }
@@ -50,12 +42,7 @@ actual fun Webview(
             }
             showDialog = true
         }
-
-    if (isWearOS || below10) {
-        GeckoWebview(url, modifier, script, onURLChange, onDialog = showCustomDialog)
-    } else {
-        AndroidWebview(url, modifier, script, onURLChange, onDialog = showCustomDialog)
-    }
+    AndroidWebview(url, modifier, script, onURLChange, onDialog = showCustomDialog)
 
     if (showDialog) {
         Dialog(

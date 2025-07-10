@@ -7,11 +7,7 @@ import android.webkit.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.net.toUri
 import io.suroi.ui.theme.DialogType
-import org.mozilla.geckoview.*
-import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.NEGATIVE
-import org.mozilla.geckoview.GeckoSession.PromptDelegate.ButtonPrompt.Type.POSITIVE
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -113,134 +109,6 @@ fun AndroidWebview(
                     }
                 }
                 loadUrl(url)
-            }
-        },
-        modifier = modifier
-    )
-}
-
-@Composable
-fun GeckoWebview(
-    url: String,
-    modifier: Modifier,
-    script: String,
-    onURLChange: (String) -> Unit,
-    onDialog: (
-        DialogType,
-        String,
-        String,
-        String,
-        (String?) -> Unit,
-        () -> Unit,
-        () -> Unit
-    ) -> Unit
-) {
-    AndroidView(
-        factory = { context ->
-            val geckoView = GeckoView(context)
-            val runtime = GeckoRuntime.create(context)
-            val session = GeckoSession()
-
-            session.contentDelegate = object : GeckoSession.ContentDelegate {}
-
-            session.progressDelegate = object : GeckoSession.ProgressDelegate {
-                override fun onPageStop(session: GeckoSession, success: Boolean) {
-                    if (success) {
-                        session.loadUri("javascript:(function() { $script } })();")
-                    } else {
-                        println("unsuccessful page stop")
-                    }
-                }
-            }
-
-            session.promptDelegate = object : GeckoSession.PromptDelegate {
-                override fun onAlertPrompt(
-                    session: GeckoSession,
-                    prompt: GeckoSession.PromptDelegate.AlertPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
-                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
-                    onDialog(
-                        DialogType.Alert,
-                        "Alert",
-                        prompt.message ?: "",
-                        "",
-                        { result.complete(prompt.dismiss()) },
-                        {},
-                        { result.complete(prompt.dismiss()) }
-                    )
-                    return result
-                }
-                override fun onButtonPrompt(
-                    session: GeckoSession,
-                    prompt: GeckoSession.PromptDelegate.ButtonPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
-                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
-                    onDialog(
-                        DialogType.Confirm,
-                        "Confirm",
-                        prompt.message ?: "",
-                        "",
-                        { result.complete(prompt.confirm(POSITIVE)) },
-                        { result.complete(prompt.confirm(NEGATIVE)) },
-                        { result.complete(prompt.dismiss()) }
-                    )
-                    return result
-                }
-                override fun onTextPrompt(
-                    session: GeckoSession,
-                    prompt: GeckoSession.PromptDelegate.TextPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
-                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
-                    onDialog(
-                        DialogType.Prompt,
-                        "Prompt",
-                        prompt.message ?: "",
-                        prompt.defaultValue ?: "",
-                        { input -> result.complete(prompt.confirm(input ?: "")) },
-                        { result.complete(prompt.dismiss()) },
-                        { result.complete(prompt.dismiss()) }
-                    )
-                    return result
-                }
-                override fun onBeforeUnloadPrompt(
-                    session: GeckoSession,
-                    prompt: GeckoSession.PromptDelegate.BeforeUnloadPrompt
-                ): GeckoResult<GeckoSession.PromptDelegate.PromptResponse?> {
-                    val result = GeckoResult<GeckoSession.PromptDelegate.PromptResponse?>()
-                    onDialog(
-                        DialogType.Unload,
-                        prompt.title ?: "Reload page?",
-                        "Changes you made may not be saved.",
-                        "",
-                        { result.complete(prompt.confirm(AllowOrDeny.ALLOW)) },
-                        { result.complete(prompt.confirm(AllowOrDeny.DENY)) },
-                        { result.complete(prompt.dismiss()) }
-                    )
-                    return result
-                }
-            }
-
-            session.open(runtime)
-            geckoView.setSession(session)
-
-            session.navigationDelegate = object : GeckoSession.NavigationDelegate {
-                override fun onNewSession(session: GeckoSession, uri: String): GeckoResult<GeckoSession?>? {
-                    if (!uri.startsWith("https://suroi.io")) {
-                        onURLChange(uri)
-                        context.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()))
-                        return null
-                    }
-                    return null
-                }
-            }
-
-            session.loadUri(url)
-
-            geckoView.apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
             }
         },
         modifier = modifier
