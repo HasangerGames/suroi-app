@@ -24,6 +24,7 @@ fun App() {
         var showContent by remember { mutableStateOf(false) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
         val backgroundImageURL = remember { mutableStateOf<String?>(null) }
+        val deviceLanguage = remember { getDeviceLanguage() }
 
         var connecting by remember { mutableStateOf(false) }
         var showOfflineScreen by remember { mutableStateOf(false) }
@@ -120,7 +121,7 @@ fun App() {
                         showDialog = true
                     }
                 Webview(
-                    "https://suroi.io",
+                    "https://suroi.io/?language=$deviceLanguage",
                     modifier = Modifier.fillMaxSize(),
                     script = "document.querySelector('.btn-kofi').style.display = 'none';",
                     onURLChange = { showContent = false },
