@@ -90,12 +90,53 @@ fun App() {
                 enter = fadeIn() + expandVertically (),
                 exit = fadeOut() + shrinkVertically()
             ) {
+                var showDialog by remember { mutableStateOf(false) }
+                var dialogType by remember { mutableStateOf(DialogType.Alert) }
+                var dialogTitle by remember { mutableStateOf("") }
+                var dialogMessage by remember { mutableStateOf("") }
+                var dialogDefaultValue by remember { mutableStateOf("") }
+                var onDialogConfirm: (String?) -> Unit by remember { mutableStateOf({}) }
+                var onDialogCancel: () -> Unit by remember { mutableStateOf({}) }
+                var onDialogDismiss: () -> Unit by remember { mutableStateOf({}) }
+
+                val showCustomDialog: (DialogType, String, String, String, (String?) -> Unit, () -> Unit, () -> Unit) -> Unit =
+                    { type, title, message, defaultValue, onConfirm, onCancel, onDismiss ->
+                        dialogType = type
+                        dialogTitle = title
+                        dialogMessage = message
+                        dialogDefaultValue = defaultValue
+                        onDialogConfirm = { input ->
+                            onConfirm(input)
+                            showDialog = false
+                        }
+                        onDialogCancel = {
+                            onCancel()
+                            showDialog = false
+                        }
+                        onDialogDismiss = {
+                            onDismiss()
+                            showDialog = false
+                        }
+                        showDialog = true
+                    }
                 Webview(
                     "https://suroi.io",
                     modifier = Modifier.fillMaxSize(),
                     script = "document.querySelector('.btn-kofi').style.display = 'none';",
-                    onURLChange = { showContent = false }
+                    onURLChange = { showContent = false },
+                    onDialog = showCustomDialog
                 )
+                if (showDialog) {
+                    Dialog(
+                        type = dialogType,
+                        title = dialogTitle,
+                        message = dialogMessage,
+                        defaultValue = dialogDefaultValue,
+                        onDismissRequest = onDialogDismiss,
+                        onConfirm = onDialogConfirm,
+                        onCancel = onDialogCancel
+                    )
+                }
             }
             AnimatedVisibility(
                 visible = !showContent,

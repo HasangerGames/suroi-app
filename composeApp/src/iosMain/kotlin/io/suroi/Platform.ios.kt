@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.UIKitView
+import io.suroi.ui.theme.DialogType
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.*
@@ -16,7 +17,16 @@ actual fun Webview(
     url: String,
     modifier: Modifier,
     script: String,
-    onURLChange: (String) -> Unit
+    onURLChange: (String) -> Unit,
+    onDialog: (
+        DialogType,
+        String,
+        String,
+        String,
+        (String?) -> Unit,
+        () -> Unit,
+        () -> Unit
+    ) -> Unit
 ) {
     UIKitView(
         factory = {
