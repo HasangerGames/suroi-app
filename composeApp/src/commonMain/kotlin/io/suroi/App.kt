@@ -20,24 +20,24 @@ import suroi.composeapp.generated.resources.settings
 @Composable
 fun App() {
     SuroiTheme {
-        lateinit var serverInfo: ServerInfo
         var showContent by remember { mutableStateOf(false) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
-        val backgroundImageURL = remember { mutableStateOf<String?>(null) }
+        var backgroundImageURL by remember { mutableStateOf("") }
         val deviceLanguage = remember { getDeviceLanguage() }
 
         var connecting by remember { mutableStateOf(false) }
         var showOfflineScreen by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
-            serverInfo = getServerInfo("https://na.suroi.io/api/serverInfo")
+            var mode = "normal"
             try {
-                val mode = serverInfo.mode
-                backgroundImageURL.value = "https://suroi.io/img/backgrounds/menu/${mode}.png"
+                val serverInfo = getServerInfo("https://na.suroi.io/api/serverInfo")
+                mode = serverInfo.mode
             } catch (e: Exception) {
                 println("Error fetching mode: ${e.message}")
             } finally {
                 backgroundIsLoading = false
+                backgroundImageURL = "https://suroi.io/img/backgrounds/menu/$mode.png"
             }
         }
         Box(modifier = Modifier.fillMaxSize().background(color = Gray)) {
@@ -51,7 +51,7 @@ fun App() {
                 }
             } else {
                 AsyncImage(
-                    model = backgroundImageURL.value,
+                    model = backgroundImageURL,
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop,
