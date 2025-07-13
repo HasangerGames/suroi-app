@@ -15,6 +15,7 @@ import io.suroi.ui.theme.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.Res
+import suroi.composeapp.generated.resources.back
 import suroi.composeapp.generated.resources.settings
 
 @Composable
@@ -27,6 +28,7 @@ fun App() {
 
         var connecting by remember { mutableStateOf(false) }
         var showOfflineScreen by remember { mutableStateOf(false) }
+        var showSettings by remember { mutableStateOf(false) }
         val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             var mode = "normal"
@@ -152,7 +154,7 @@ fun App() {
                         )
                 ) {
                     IconButton(
-                        onClick = {},
+                        onClick = { showSettings = true },
                         modifier = Modifier
                             .size(48.dp)
                             .padding(4.dp)
@@ -167,6 +169,52 @@ fun App() {
 
                 }
             }
+            AnimatedVisibility(
+                visible = showSettings,
+                enter = expandIn(expandFrom = Alignment.TopEnd) + fadeIn(),
+                exit = shrinkOut(shrinkTowards = Alignment.TopEnd) + fadeOut(),
+                modifier = Modifier.align(Alignment.TopEnd)
+            ) {
+                Settings(
+                    onBackClicked = { showSettings = false },
+                    modifier = Modifier
+                ){}
+            }
+        }
+    }
+}
+
+@Composable
+fun Settings(onBackClicked: () -> Unit, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(Gray),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .padding(16.dp)
+                .background(
+                    color = DarkTransparent,
+                    shape = RoundedCornerShape(24.dp)
+                )
+                .align(Alignment.TopStart)
+        ) {
+            IconButton(
+                onClick = onBackClicked,
+                modifier = modifier
+                    .size(48.dp)
+                    .padding(4.dp)
+            ) {
+                Icon(
+                    painter = painterResource(Res.drawable.back),
+                    contentDescription = "back",
+                    tint = White,
+                    modifier = Modifier,
+                )
+            }
+            content()
         }
     }
 }
