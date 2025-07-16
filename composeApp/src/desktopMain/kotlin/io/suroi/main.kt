@@ -9,6 +9,7 @@ import suroi.composeapp.generated.resources.Res
 import suroi.composeapp.generated.resources.icon
 
 fun main() = application {
+    val datastore = createDataStore { DATASTORE_FILE_NAME }
     Window(
         onCloseRequest = ::exitApplication,
         icon = painterResource(Res.drawable.icon),
@@ -16,6 +17,8 @@ fun main() = application {
         state = WindowState(placement = WindowPlacement.Maximized),
         undecorated = true,
     ) {
-        App()
+        App(
+            datastore = datastore
+        )
     }
 }

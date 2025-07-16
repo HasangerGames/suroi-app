@@ -3,9 +3,7 @@ package io.suroi
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.remember
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -19,14 +17,12 @@ class MainActivity : ComponentActivity() {
         systemUI.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
         setContent {
-            App()
+            App(
+                datastore = remember {
+                    createDataStore(applicationContext)
+                }
+            )
         }
 
     }
-}
-
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
 }

@@ -57,8 +57,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
 
-            implementation(libs.datastore)
-            implementation(libs.datastore.preferences)
+            api(libs.datastore)
+            api(libs.datastore.preferences)
         }
 
         androidMain.dependencies {

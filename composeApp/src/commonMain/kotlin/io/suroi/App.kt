@@ -10,8 +10,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import coil3.compose.AsyncImage
 import io.suroi.ui.theme.*
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.Res
@@ -19,7 +24,9 @@ import suroi.composeapp.generated.resources.back
 import suroi.composeapp.generated.resources.settings
 
 @Composable
-fun App() {
+fun App(
+    datastore: DataStore<Preferences>,
+) {
     SuroiTheme {
         var showContent by remember { mutableStateOf(false) }
         var backgroundIsLoading by remember { mutableStateOf(true) }
@@ -29,7 +36,7 @@ fun App() {
         var connecting by remember { mutableStateOf(false) }
         var showOfflineScreen by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
-        val coroutineScope = rememberCoroutineScope()
+        val scope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             var mode = "normal"
             try {
@@ -63,7 +70,7 @@ fun App() {
             if (showOfflineScreen) {
                 OfflineScreen (onRetry = {
                     connecting = true
-                    coroutineScope.launch { showOfflineScreen = !isOnline() }
+                    scope.launch { showOfflineScreen = !isOnline() }
                     connecting = false
                 }
                 )
@@ -73,7 +80,7 @@ fun App() {
                     onClick = {
                         showOfflineScreen = false
                         connecting = true
-                        coroutineScope.launch {
+                        scope.launch {
                             if (isOnline()) {
                                 showContent = true
                             } else {
@@ -178,7 +185,31 @@ fun App() {
                 Settings(
                     onBackClicked = { showSettings = false },
                     modifier = Modifier
-                ){}
+                ){
+                    // TODO TODO TODO TODO TODO TODO
+                    val settingExample: Boolean by datastore.data.map {
+                        val exampleKey = booleanPreferencesKey("hi")
+                        it[exampleKey] ?: false
+                    }.collectAsState(initial = false)
+
+                    Text(
+                        text = "setting state is: $settingExample",
+                        color = White
+                    )
+                    Switch(
+                        checked = settingExample,
+                        onCheckedChange = {
+                            scope.launch {
+                                datastore.edit { datastore ->
+                                    val exampleKey = booleanPreferencesKey("hi")
+                                    datastore[exampleKey] = !settingExample
+                                }
+                            }
+                        },
+                        modifier = Modifier.padding(16.dp),
+                    )
+                    // TODO TODO TODO TODO TODO TODO
+                }
             }
         }
     }
