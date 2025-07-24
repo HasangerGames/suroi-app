@@ -5,20 +5,29 @@ import androidx.compose.ui.Modifier
 import io.suroi.ui.theme.DialogType
 
 @Composable
-expect fun Webview(
-    url: String,
+expect fun WebFrame(
     modifier: Modifier,
-    script: String,
+    webEngine: WebEngine
+)
+
+expect class WebEngine(
+    url: String,
     onURLChange: (String) -> Unit,
     onDialog: (
-        DialogType,
-        String,
-        String,
-        String,
-        (String?) -> Unit,
-        () -> Unit,
-        () -> Unit
+        type: DialogType,
+        title: String,
+        message: String,
+        defaultValue: String,
+        onConfirm: (String?) -> Unit,
+        onCancel: () -> Unit,
+        onDismiss: () -> Unit
     ) -> Unit
-)
+) {
+    fun executeJS(script: String)
+    fun bind(name: String, block: (String) -> Unit)
+    fun loadUrl(url: String)
+}
+
+
 
 expect fun getDeviceLanguage(): String

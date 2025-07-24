@@ -11,3 +11,8 @@ when one is done, please mark it as DONE
 * make offline screen fully in compose
 * make toasts in compose to display errors to the user (ex: network or fetching errors)
 * custom dialogs for all platforms in compose (alert, confirm, prompt, unload, color select)
+
+* Switch all ktor engines to the most efficient for each platform
+* Use ktor websockets for spot reserving
+* Create navigation bar to choose between main, 1v1, test, and wiki
+* An entire frontend for the suroi api accounts system

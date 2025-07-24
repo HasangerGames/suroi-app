@@ -77,6 +77,7 @@ kotlin {
             implementation(libs.ktor.client.cio)
             implementation(libs.webViewKo)
             implementation(libs.webViewKo.compose)
+            implementation(libs.jcef)
         }
 
         jvmMain {
@@ -125,11 +126,17 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "io.suroi.MainKt"
-
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.suroi"
             packageVersion = "1.0.0"
         }
+
+        jvmArgs(
+            "--add-opens=java.desktop/java.awt.peer=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.lwawt=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.lwawt.macosx=ALL-UNNAMED",
+        )
     }
 }
