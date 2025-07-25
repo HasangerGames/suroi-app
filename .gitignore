@@ -2,7 +2,7 @@
 .kotlin
 .gradle
 **/build/
-**/kcef-bundle/
+**/jcef-bundle/
 xcuserdata
 !src/**/build/
 local.properties

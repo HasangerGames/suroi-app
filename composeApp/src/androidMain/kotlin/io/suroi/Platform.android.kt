@@ -46,6 +46,9 @@ actual class WebEngine actual constructor(
             field?.let { loadUrl(this.url) }
         }
 
+    private val scriptQueue = mutableListOf<String>()
+    private var pageLoaded = false
+
     private val bindings = mutableMapOf<String, (String) -> Unit>()
     fun setupWebView(webView: WebView) {
         webView.apply {
@@ -62,6 +65,9 @@ actual class WebEngine actual constructor(
             webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView, url: String) {
                     super.onPageFinished(view, url)
+                    pageLoaded = true
+                    scriptQueue.forEach { executeJS(it) }
+                    scriptQueue.clear()
                     bindings.forEach { (name, _) ->
                         val script = "window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };"
                         executeJS(script)
@@ -106,8 +112,12 @@ actual class WebEngine actual constructor(
     }
 
     actual fun executeJS(script: String) {
-        androidWebView?.post {
-            androidWebView?.evaluateJavascript(script, null)
+        if (pageLoaded) {
+            androidWebView?.post {
+                androidWebView?.evaluateJavascript(script, null)
+            }
+        } else {
+            scriptQueue += script
         }
     }
 
