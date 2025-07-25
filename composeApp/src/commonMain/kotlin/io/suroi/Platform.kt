@@ -2,7 +2,7 @@ package io.suroi
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import io.suroi.ui.theme.DialogType
+import io.suroi.ui.components.DialogData
 
 @Composable
 expect fun WebFrame(
@@ -13,18 +13,10 @@ expect fun WebFrame(
 expect class WebEngine(
     url: String,
     onURLChange: (String) -> Unit,
-    onDialog: (
-        type: DialogType,
-        title: String,
-        message: String,
-        defaultValue: String,
-        onConfirm: (String?) -> Unit,
-        onCancel: () -> Unit,
-        onDismiss: () -> Unit
-    ) -> Unit
+    onDialog: (DialogData) -> Unit
 ) {
     fun executeJS(script: String)
-    fun bind(name: String, block: (String) -> Unit)
+    fun bind(name: String, block: (String) -> String)
     fun loadUrl(url: String)
 }
 

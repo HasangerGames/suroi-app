@@ -15,6 +15,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import coil3.compose.AsyncImage
+import io.suroi.ui.components.Dialog
+import io.suroi.ui.components.DialogData
 import io.suroi.ui.theme.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -100,32 +102,24 @@ fun App(
                 exit = fadeOut() + shrinkVertically()
             ) {
                 var showDialog by remember { mutableStateOf(false) }
-                var dialogType by remember { mutableStateOf(DialogType.Alert) }
-                var dialogTitle by remember { mutableStateOf("") }
-                var dialogMessage by remember { mutableStateOf("") }
-                var dialogDefaultValue by remember { mutableStateOf("") }
-                var onDialogConfirm: (String?) -> Unit by remember { mutableStateOf({}) }
-                var onDialogCancel: () -> Unit by remember { mutableStateOf({}) }
-                var onDialogDismiss: () -> Unit by remember { mutableStateOf({}) }
+                var dialogData by remember { mutableStateOf(DialogData()) }
 
-                val showCustomDialog: (DialogType, String, String, String, (String?) -> Unit, () -> Unit, () -> Unit) -> Unit =
-                    { type, title, message, defaultValue, onConfirm, onCancel, onDismiss ->
-                        dialogType = type
-                        dialogTitle = title
-                        dialogMessage = message
-                        dialogDefaultValue = defaultValue
-                        onDialogConfirm = { input ->
-                            onConfirm(input)
-                            showDialog = false
-                        }
-                        onDialogCancel = {
-                            onCancel()
-                            showDialog = false
-                        }
-                        onDialogDismiss = {
-                            onDismiss()
-                            showDialog = false
-                        }
+                val showCustomDialog: (DialogData) -> Unit =
+                    { data ->
+                        dialogData = data.copy(
+                            onConfirm = {
+                                data.onConfirm(it)
+                                showDialog = false
+                            },
+                            onCancel = {
+                                data.onCancel()
+                                showDialog = false
+                            },
+                            onDismiss = {
+                                data.onDismiss()
+                                showDialog = false
+                            }
+                        )
                         showDialog = true
                     }
                 val webEngine = WebEngine(
@@ -135,18 +129,12 @@ fun App(
                 )
                 webEngine.executeJS("document.querySelector('.btn-kofi').style.display = 'none';")
                 WebFrame(
-                    modifier = Modifier,
+                    modifier = Modifier.fillMaxWidth(),
                     webEngine = webEngine
                 )
                 if (showDialog) {
                     Dialog(
-                        type = dialogType,
-                        title = dialogTitle,
-                        message = dialogMessage,
-                        defaultValue = dialogDefaultValue,
-                        onDismissRequest = onDialogDismiss,
-                        onConfirm = onDialogConfirm,
-                        onCancel = onDialogCancel
+                        dialogData
                     )
                 }
             }

@@ -7,7 +7,8 @@ import android.webkit.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import io.suroi.ui.theme.DialogType
+import io.suroi.ui.components.DialogData
+import io.suroi.ui.components.DialogType
 import java.util.*
 
 @Composable
@@ -30,15 +31,7 @@ actual fun WebFrame(
 actual class WebEngine actual constructor(
     private val url: String,
     private val onURLChange: (String) -> Unit,
-    private val onDialog: (
-        type: DialogType,
-        title: String,
-        message: String,
-        defaultValue: String,
-        onConfirm: (String?) -> Unit,
-        onCancel: () -> Unit,
-        onDismiss: () -> Unit
-    ) -> Unit
+    private val onDialog: (DialogData) -> Unit
 ) {
     internal var androidWebView: WebView? = null
         set(value) {
@@ -49,7 +42,7 @@ actual class WebEngine actual constructor(
     private val scriptQueue = mutableListOf<String>()
     private var pageLoaded = false
 
-    private val bindings = mutableMapOf<String, (String) -> Unit>()
+    private val bindings = mutableMapOf<String, (String) -> String>()
     fun setupWebView(webView: WebView) {
         webView.apply {
             settings.domStorageEnabled = true
@@ -86,19 +79,50 @@ actual class WebEngine actual constructor(
             }
             webChromeClient = object : WebChromeClient() {
                 override fun onJsAlert(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
-                    onDialog(DialogType.Alert, "Alert", m ?: "", "", { r?.confirm() }, {}, { r?.confirm() })
+                    onDialog(DialogData(
+                        DialogType.Alert,
+                        "Alert",
+                        m ?: "",
+                        "",
+                        { r?.confirm() },
+                        {},
+                        { r?.confirm() }
+                    ))
                     return true
                 }
                 override fun onJsConfirm(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
-                    onDialog(DialogType.Confirm, "Confirm", m ?: "", "", { r?.confirm() }, { r?.cancel() }, { r?.cancel() })
+                    onDialog(DialogData(
+                        DialogType.Confirm,
+                        "Confirm",
+                        m ?: "",
+                        "",
+                        { r?.confirm() },
+                        { r?.cancel() },
+                        { r?.cancel() }
+                    ))
                     return true
                 }
                 override fun onJsPrompt(v: WebView?, u: String?, m: String?, d: String?, r: JsPromptResult?): Boolean {
-                    onDialog(DialogType.Prompt, "Prompt", m ?: "", d ?: "", { i -> if (i != null) r?.confirm(i) else r?.cancel() }, { r?.cancel() }, { r?.cancel() })
+                    onDialog(DialogData(
+                        DialogType.Prompt,
+                        "Prompt",
+                        m ?: "",
+                        d ?: "",
+                        { i -> if (i != null) r?.confirm(i) else r?.cancel() },
+                        { r?.cancel() }, { r?.cancel() }
+                    ))
                     return true
                 }
                 override fun onJsBeforeUnload(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
-                    onDialog(DialogType.Unload, "Leave page?", m ?: "Changes you made may not be saved.", "", { r?.confirm() }, { r?.cancel() }, { r?.cancel() })
+                    onDialog(DialogData(
+                        DialogType.Unload,
+                        "Leave page?",
+                        m ?: "Changes you made may not be saved.",
+                        "",
+                        { r?.confirm() },
+                        { r?.cancel() },
+                        { r?.cancel() }
+                    ))
                     return true
                 }
             }
@@ -121,7 +145,7 @@ actual class WebEngine actual constructor(
         }
     }
 
-    actual fun bind(name: String, block: (String) -> Unit) {
+    actual fun bind(name: String, block: (String) -> String) {
         bindings[name] = block
         val script = "window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };"
         executeJS(script)

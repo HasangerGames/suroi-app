@@ -1,4 +1,4 @@
-package io.suroi.ui.theme
+package io.suroi.ui.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,6 +12,10 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import io.suroi.ui.theme.DarkGray
+import io.suroi.ui.theme.DarkTransparent
+import io.suroi.ui.theme.Orange
+import io.suroi.ui.theme.White
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 enum class DialogType {
@@ -20,23 +24,28 @@ enum class DialogType {
     Prompt,
     Unload
 }
+
+data class DialogData(
+    val type: DialogType = DialogType.Alert,
+    val title: String = "",
+    val message: String = "",
+    val defaultValue: String = "",
+    val onConfirm: (String?) -> Unit = {},
+    val onCancel: () -> Unit = {},
+    val onDismiss: () -> Unit = {}
+)
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun Dialog(
-    type: DialogType = DialogType.Alert,
-    title: String,
-    message: String,
-    defaultValue: String = "",
-    onDismissRequest: () -> Unit = {},
-    onConfirm: (String?) -> Unit = {},
-    onCancel: () -> Unit = {}
+    data: DialogData
 ) {
     var promptInput by remember { mutableStateOf("") }
     val promptScrollState = rememberScrollState()
 
     BasicAlertDialog(
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = data.onDismiss,
         modifier = Modifier
             .widthIn(max = 400.dp)
     ) {
@@ -51,7 +60,7 @@ fun Dialog(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = title,
+                    text = data.title,
                     style = TextStyle(
                         color = White,
                         fontSize = 24.sp,
@@ -62,7 +71,7 @@ fun Dialog(
                 )
 
                 Text(
-                    text = message,
+                    text = data.message,
                     style = TextStyle(
                         color = White.copy(alpha = 0.5f),
                         fontSize = 14.sp
@@ -71,7 +80,7 @@ fun Dialog(
                         .padding(bottom = 16.dp)
                         .align(Alignment.CenterHorizontally)
                 )
-                if (type == DialogType.Prompt) {
+                if (data.type == DialogType.Prompt) {
                     BasicTextField(
                         value = promptInput,
                         onValueChange = { promptInput = it },
@@ -91,7 +100,7 @@ fun Dialog(
                         decorationBox = { innerTextField ->
                             if (promptInput.isEmpty()) {
                                 Text(
-                                    text = defaultValue,
+                                    text = data.defaultValue,
                                     color = White.copy(alpha = 0.3f),
                                     fontSize = 14.sp
                                 )
@@ -109,7 +118,7 @@ fun Dialog(
                 ) {
                     Button(
                         onClick = {
-                            onConfirm(if (type == DialogType.Prompt) promptInput else null)
+                            data.onConfirm(if (data.type == DialogType.Prompt) promptInput else null)
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Orange,
@@ -119,14 +128,14 @@ fun Dialog(
                         border = BorderStroke(2.dp, Orange)
                     ) {
                         Text(
-                            if (type == DialogType.Unload) "Reload" else "OK",
+                            if (data.type == DialogType.Unload) "Reload" else "OK",
                             style = TextStyle(fontSize = 14.sp))
                     }
 
-                    if (type != DialogType.Alert) {
+                    if (data.type != DialogType.Alert) {
                         Spacer(modifier = Modifier.width(12.dp))
                         TextButton(
-                            onClick = onCancel,
+                            onClick = data.onCancel,
                             colors = ButtonDefaults.textButtonColors(
                                 contentColor = Orange,
                             ),
