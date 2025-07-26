@@ -75,6 +75,8 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.ktor.client.cio)
+            implementation(libs.webviewko)
+            // implementation(libs.webviewko.compose)
         }
 
         commonTest.dependencies {
