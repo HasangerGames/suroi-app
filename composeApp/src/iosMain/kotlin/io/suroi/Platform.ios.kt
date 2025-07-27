@@ -81,7 +81,7 @@ actual class WebEngine actual constructor(
             "Alert",
             runJavaScriptAlertPanelWithMessage,
             "",
-            { completionHandler() },
+            { _, _ -> completionHandler() },
             {},
             { completionHandler() }
         ))
@@ -93,7 +93,7 @@ actual class WebEngine actual constructor(
             "Confirm",
             runJavaScriptConfirmPanelWithMessage,
             "",
-            { completionHandler(true) },
+            { _, _ -> completionHandler(true) },
             { completionHandler(false) },
             { completionHandler(false) }
         ))
@@ -105,7 +105,7 @@ actual class WebEngine actual constructor(
             "Prompt",
             runJavaScriptTextInputPanelWithPrompt,
             defaultText ?: "",
-            { input -> completionHandler(input) },
+            { input, _ -> completionHandler(input) },
             { completionHandler(null) },
             { completionHandler(null) }
         ))

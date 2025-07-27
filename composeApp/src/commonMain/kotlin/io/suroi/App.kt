@@ -77,12 +77,11 @@ fun App(
             ) {
                 var showDialog by remember { mutableStateOf(false) }
                 var dialogData by remember { mutableStateOf(DialogData()) }
-
                 val showCustomDialog: (DialogData) -> Unit =
                     { data ->
                         dialogData = data.copy(
-                            onConfirm = {
-                                data.onConfirm(it)
+                            onConfirm = { username, password ->
+                                data.onConfirm(username, password)
                                 showDialog = false
                             },
                             onCancel = {
@@ -97,7 +96,7 @@ fun App(
                         showDialog = true
                     }
                 val webEngine = WebEngine(
-                    "https://suroi.io/",
+                    "https://suroi.io",
                     onURLChange = { ingame = false },
                     onDialog = showCustomDialog,
                 )

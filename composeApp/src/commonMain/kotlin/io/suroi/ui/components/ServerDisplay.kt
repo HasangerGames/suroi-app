@@ -4,7 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,10 +19,7 @@ import coil3.compose.AsyncImage
 import io.ktor.client.*
 import io.suroi.ServerInfo
 import io.suroi.getServerInfo
-import io.suroi.ui.theme.Black
-import io.suroi.ui.theme.Dark
-import io.suroi.ui.theme.Gray
-import io.suroi.ui.theme.White
+import io.suroi.ui.theme.*
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.Res
@@ -78,7 +78,7 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
             Text(
                 text = humanReadableRegion(region),
                 color = White,
-                style = MaterialTheme.typography.displayMedium,
+                style = suroiTypography().displayMedium,
                 fontWeight = FontWeight.SemiBold
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -89,7 +89,8 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                     )
                 }",
                 color = White,
-                style = MaterialTheme.typography.titleMedium
+                fontFamily = inter(),
+                style = suroiTypography().titleMedium
             )
             Spacer(modifier = Modifier.height(16.dp))
             Row {
@@ -104,14 +105,14 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                         tint = Dark,
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Play", color = Dark, style = MaterialTheme.typography.titleMedium)
+                    Text("Play", color = Dark, style = suroiTypography().titleMedium)
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = { },
                     colors = ButtonDefaults.buttonColors(containerColor = Gray.copy(alpha = 0.7f)),
                 ) {
-                    Text("Server info", color = White, style = MaterialTheme.typography.titleMedium)
+                    Text("Server info", color = White, style = suroiTypography().titleMedium)
                 }
             }
         }

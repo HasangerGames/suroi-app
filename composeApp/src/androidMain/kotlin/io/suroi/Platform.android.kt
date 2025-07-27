@@ -2,6 +2,7 @@ package io.suroi
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.view.ViewGroup
 import android.webkit.*
 import androidx.compose.runtime.Composable
@@ -69,12 +70,66 @@ actual class WebEngine actual constructor(
 
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     val newURL = request.url.toString()
-                    if (!newURL.contains("suroi")) {
+                    if (!newURL.contains("suroi.io")) {
                         onURLChange(newURL)
                         view.context.startActivity(Intent(Intent.ACTION_VIEW, request.url))
                         return true
                     }
                     return false
+                }
+
+
+                override fun onReceivedHttpAuthRequest(
+                    view: WebView?,
+                    handler: HttpAuthHandler?,
+                    host: String?,
+                    realm: String?
+                ) {
+                    if (view == null || handler == null) {
+                        return
+                    }
+
+                    var username: String? = null
+                    var password: String? = null
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val webViewDatabase = WebViewDatabase.getInstance(view.context)
+                        val credentials = webViewDatabase.getHttpAuthUsernamePassword(host, realm)
+                        if (credentials != null && credentials.size == 2) {
+                            username = credentials[0]
+                            password = credentials[1]
+                        }
+                    } else {
+                        val credentials = view.getHttpAuthUsernamePassword(host, realm)
+                        if (credentials != null && credentials.size == 2) {
+                            username = credentials[0]
+                            password = credentials[1]
+                        }
+                    }
+                    if (username != null && password != null) {
+                        handler.proceed(username, password)
+                    } else {
+                        onDialog(DialogData(
+                            type = DialogType.Auth,
+                            title = "Sign in",
+                            message = "$realm",
+                            onConfirm = { inputUsername, inputPassword ->
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    WebViewDatabase.getInstance(view.context).setHttpAuthUsernamePassword(host, realm, inputUsername, inputPassword)
+                                } else {
+                                    view.setHttpAuthUsernamePassword(host, realm, inputUsername, inputPassword)
+                                }
+                                handler.proceed(inputUsername, inputPassword)
+                            },
+                            onCancel = {
+                                handler.cancel()
+                            },
+                            onDismiss = {
+                                handler.cancel()
+                                androidWebView?.reload()
+                            }
+                        ))
+                    }
                 }
             }
             webChromeClient = object : WebChromeClient() {
@@ -84,7 +139,7 @@ actual class WebEngine actual constructor(
                         "Alert",
                         m ?: "",
                         "",
-                        { r?.confirm() },
+                        { _, _ -> r?.confirm()  },
                         {},
                         { r?.confirm() }
                     ))
@@ -96,7 +151,7 @@ actual class WebEngine actual constructor(
                         "Confirm",
                         m ?: "",
                         "",
-                        { r?.confirm() },
+                        { _, _ -> r?.confirm() },
                         { r?.cancel() },
                         { r?.cancel() }
                     ))
@@ -108,7 +163,7 @@ actual class WebEngine actual constructor(
                         "Prompt",
                         m ?: "",
                         d ?: "",
-                        { i -> if (i != null) r?.confirm(i) else r?.cancel() },
+                        { i, _ -> if (i != null) r?.confirm(i) else r?.cancel() },
                         { r?.cancel() }, { r?.cancel() }
                     ))
                     return true
@@ -119,7 +174,7 @@ actual class WebEngine actual constructor(
                         "Leave page?",
                         m ?: "Changes you made may not be saved.",
                         "",
-                        { r?.confirm() },
+                        { _, _ -> r?.confirm() },
                         { r?.cancel() },
                         { r?.cancel() }
                     ))

@@ -11,7 +11,7 @@ fun SuroiTheme(
     val colors = DarkColorScheme
     MaterialTheme(
         colorScheme = colors,
-        // typography = suroiTypography(),
+        typography = suroiTypography(),
         content = content
     )
 }
