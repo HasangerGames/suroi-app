@@ -3,20 +3,25 @@ package io.suroi
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import coil3.compose.AsyncImage
 import io.suroi.ui.components.Dialog
 import io.suroi.ui.components.DialogData
+import io.suroi.ui.components.ServerDisplay
 import io.suroi.ui.theme.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -30,73 +35,42 @@ fun App(
     datastore: DataStore<Preferences>,
 ) {
     SuroiTheme {
-        var showContent by remember { mutableStateOf(false) }
-        var backgroundIsLoading by remember { mutableStateOf(true) }
-        var backgroundImageURL by remember { mutableStateOf("") }
-
-        var connecting by remember { mutableStateOf(false) }
+        var ingame by remember { mutableStateOf(false) }
         var showOfflineScreen by remember { mutableStateOf(false) }
         var showSettings by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
-        LaunchedEffect(Unit) {
-            var mode = "normal"
-            try {
-                val serverInfo = getServerInfo("https://na.suroi.io/api/serverInfo")
-                mode = serverInfo.mode
-            } catch (e: Exception) {
-                println("Error fetching mode: ${e.message}")
-            } finally {
-                backgroundIsLoading = false
-                backgroundImageURL = "https://suroi.io/img/backgrounds/menu/$mode.png"
-            }
-        }
-        Box(modifier = Modifier.fillMaxSize().background(color = Gray)) {
-            if (backgroundIsLoading || connecting) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.size(96.dp))
-                }
-            } else {
-                AsyncImage(
-                    model = backgroundImageURL,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            }
 
+        Box(modifier = Modifier.fillMaxSize().background(color = Color.Black)) {
             if (showOfflineScreen) {
-                OfflineScreen (onRetry = {
-                    connecting = true
-                    scope.launch { showOfflineScreen = !isOnline() }
-                    connecting = false
-                }
-                )
-            } else if (!showContent) {
-                Button(
-                    modifier = Modifier.align(Alignment.Center),
-                    onClick = {
-                        showOfflineScreen = false
-                        connecting = true
-                        scope.launch {
-                            if (isOnline()) {
-                                showContent = true
-                            } else {
-                                showOfflineScreen = true
-                            }
-                        }
-                        connecting = false
-                    },
-                    enabled = !connecting
+                OfflineScreen (onRetry = { scope.launch { showOfflineScreen = !isOnline() } })
+            } else if (!ingame) {
+                val client = ktorClient()
+                val scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .padding(vertical = 12.dp)
                 ) {
-                    Text("Play")
+                    for (region in listOf("na", "eu", "sa", "as", "ea", "oc")) {
+                        ServerDisplay(
+                            client,
+                            region,
+                            onPlay = {
+                                showOfflineScreen = false
+                                scope.launch {
+                                    if (isOnline()) {
+                                        ingame = true
+                                    } else {
+                                        showOfflineScreen = true
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
             AnimatedVisibility(
-                visible = showContent,
+                visible = ingame,
                 modifier = Modifier.align(Alignment.Center),
                 enter = fadeIn() + expandVertically (),
                 exit = fadeOut() + shrinkVertically()
@@ -124,7 +98,7 @@ fun App(
                     }
                 val webEngine = WebEngine(
                     "https://suroi.io/",
-                    onURLChange = { showContent = false },
+                    onURLChange = { ingame = false },
                     onDialog = showCustomDialog,
                 )
                 webEngine.executeJS("document.querySelector('.btn-kofi').style.display = 'none';")
@@ -139,7 +113,7 @@ fun App(
                 }
             }
             AnimatedVisibility(
-                visible = !showContent,
+                visible = !ingame,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(16.dp)) {
