@@ -40,9 +40,7 @@ actual class WebEngine actual constructor(
             field?.let { loadUrl(this.url) }
         }
 
-    private val scriptQueue = mutableListOf<String>()
-    private var pageLoaded = false
-
+    private val persistentScripts = mutableListOf<String>()
     private val bindings = mutableMapOf<String, (String) -> String>()
     fun setupWebView(webView: WebView) {
         webView.apply {
@@ -57,17 +55,6 @@ actual class WebEngine actual constructor(
             )
 
             webViewClient = object : WebViewClient() {
-                override fun onPageFinished(view: WebView, url: String) {
-                    super.onPageFinished(view, url)
-                    pageLoaded = true
-                    scriptQueue.forEach { executeJS(it) }
-                    scriptQueue.clear()
-                    bindings.forEach { (name, _) ->
-                        val script = "window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };"
-                        executeJS(script)
-                    }
-                }
-
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     val newURL = request.url.toString()
                     if (!newURL.contains("suroi.io")) {
@@ -191,19 +178,19 @@ actual class WebEngine actual constructor(
     }
 
     actual fun executeJS(script: String) {
-        if (pageLoaded) {
-            androidWebView?.post {
-                androidWebView?.evaluateJavascript(script, null)
-            }
-        } else {
-            scriptQueue += script
+        androidWebView?.post {
+            androidWebView?.evaluateJavascript(script, null)
         }
+    }
+
+    actual fun addPersistentJS(script: String) {
+        persistentScripts += script
+        executeJS(script)
     }
 
     actual fun bind(name: String, block: (String) -> String) {
         bindings[name] = block
-        val script = "window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };"
-        executeJS(script)
+        addPersistentJS("window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };")
     }
 
     actual fun loadUrl(url: String) {

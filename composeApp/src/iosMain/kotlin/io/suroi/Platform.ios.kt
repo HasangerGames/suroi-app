@@ -34,7 +34,6 @@ actual class WebEngine actual constructor(
 
     private val userContentController = WKUserContentController()
     private val wkWebView: WKWebView
-
     private val bindings = mutableMapOf<String, (String) -> String>()
 
     init {
@@ -58,6 +57,15 @@ actual class WebEngine actual constructor(
         wkWebView.evaluateJavaScript(script, null)
     }
 
+    actual fun addPersistentJS(script: String) {
+        val userScript = WKUserScript(
+            source = script,
+            injectionTime = WKUserScriptInjectionTime.WKUserScriptInjectionTimeAtDocumentStart,
+            forMainFrameOnly = true
+        )
+        userContentController.addUserScript(userScript)
+    }
+
     actual fun bind(name: String, block: (String) -> String) {
         bindings[name] = block
         userContentController.addScriptMessageHandler(this, name)
@@ -69,14 +77,23 @@ actual class WebEngine actual constructor(
         wkWebView.loadRequest(request)
     }
 
-    override fun userContentController(userContentController: WKUserContentController, didReceiveScriptMessage: WKScriptMessage) {
+    override fun userContentController(
+        userContentController: WKUserContentController,
+        didReceiveScriptMessage: WKScriptMessage
+    ) {
         val name = didReceiveScriptMessage.name
         val body = didReceiveScriptMessage.body as? String ?: ""
         bindings[name]?.invoke(body)
     }
 
-    override fun webView(webView: WKWebView, runJavaScriptAlertPanelWithMessage: String, initiatedByFrame: WKFrameInfo, completionHandler: () -> Unit) {
-        onDialog(DialogData(
+    override fun webView(
+        webView: WKWebView,
+        runJavaScriptAlertPanelWithMessage: String,
+        initiatedByFrame: WKFrameInfo,
+        completionHandler: () -> Unit
+    ) {
+        onDialog(
+            DialogData(
             DialogType.Alert,
             "Alert",
             runJavaScriptAlertPanelWithMessage,
@@ -87,8 +104,14 @@ actual class WebEngine actual constructor(
         ))
     }
 
-    override fun webView(webView: WKWebView, runJavaScriptConfirmPanelWithMessage: String, initiatedByFrame: WKFrameInfo, completionHandler: (Boolean) -> Unit) {
-        onDialog(DialogData(
+    override fun webView(
+        webView: WKWebView,
+        runJavaScriptConfirmPanelWithMessage: String,
+        initiatedByFrame: WKFrameInfo,
+        completionHandler: (Boolean) -> Unit
+    ) {
+        onDialog(
+            DialogData(
             DialogType.Confirm,
             "Confirm",
             runJavaScriptConfirmPanelWithMessage,
@@ -99,8 +122,15 @@ actual class WebEngine actual constructor(
         ))
     }
 
-    override fun webView(webView: WKWebView, runJavaScriptTextInputPanelWithPrompt: String, defaultText: String?, initiatedByFrame: WKFrameInfo, completionHandler: (String?) -> Unit) {
-        onDialog(DialogData(
+    override fun webView(
+        webView: WKWebView,
+        runJavaScriptTextInputPanelWithPrompt: String,
+        defaultText: String?,
+        initiatedByFrame: WKFrameInfo,
+        completionHandler: (String?) -> Unit
+    ) {
+        onDialog(
+            DialogData(
             DialogType.Prompt,
             "Prompt",
             runJavaScriptTextInputPanelWithPrompt,
@@ -111,7 +141,11 @@ actual class WebEngine actual constructor(
         ))
     }
 
-    override fun webView(webView: WKWebView, decidePolicyForNavigationAction: WKNavigationAction, decisionHandler: (WKNavigationActionPolicy) -> Unit) {
+    override fun webView(
+        webView: WKWebView,
+        decidePolicyForNavigationAction: WKNavigationAction,
+        decisionHandler: (WKNavigationActionPolicy) -> Unit
+    ) {
         val requestUrl = decidePolicyForNavigationAction.request.URL?.absoluteString
         if (requestUrl != null && !requestUrl.contains("suroi")) {
             onURLChange(requestUrl)

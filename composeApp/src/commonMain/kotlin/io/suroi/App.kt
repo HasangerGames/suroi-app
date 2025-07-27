@@ -100,7 +100,14 @@ fun App(
                     onURLChange = { ingame = false },
                     onDialog = showCustomDialog,
                 )
-                webEngine.executeJS("document.querySelector('.btn-kofi').style.display = 'none';")
+                webEngine.addPersistentJS("""
+                    document.readyState === 'complete'
+                      ? (function() { document.querySelector('.btn-kofi').style.display = 'none'; })()
+                      : window.addEventListener('DOMContentLoaded', function() { 
+                        document.querySelector('.btn-kofi').style.display = 'none'; 
+                      });
+                """.trimIndent()
+                )
                 WebFrame(
                     modifier = Modifier.fillMaxWidth(),
                     webEngine = webEngine

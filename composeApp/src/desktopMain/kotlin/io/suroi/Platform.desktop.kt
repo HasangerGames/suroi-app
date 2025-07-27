@@ -34,14 +34,22 @@ actual class WebEngine actual constructor(
     private var webview: WebviewKo? = null
     private var initialized = false
     private val bindings: MutableMap<String, (String) -> String> = mutableMapOf()
-    private var scriptQueue: MutableList<String> = mutableListOf()
+    private var scriptQueue = mutableListOf<String>()
+    private val persistentScripts = mutableListOf<String>()
 
     actual fun executeJS(script: String) {
         webview?.eval(script) ?: scriptQueue.add(script)
     }
 
+    actual fun addPersistentJS(script: String) {
+        persistentScripts += script
+        executeJS(script)
+    }
+
     actual fun bind(name: String, block: (String) -> String) {
-        webview?.bind(name) { block(it) }
+        webview?.bind(name) { block(it) } ?: run {
+            bindings[name] = block
+        }
     }
 
     actual fun loadUrl(url: String) {
@@ -65,15 +73,13 @@ actual class WebEngine actual constructor(
 
                     synchronized(scriptQueue) {
                         scriptQueue.forEach { script ->
-                            webview?.dispatch { init(
-                        """
-                            document.readyState === 'complete'
-                                ? (function() { $script })()
-                                : window.addEventListener('DOMContentLoaded', function() { $script });
-                            """.trimIndent()
-                            ) }
+                            webview?.dispatch { eval(script) }
                         }
                         scriptQueue.clear()
+                    }
+
+                    persistentScripts.forEach { script ->
+                        webview?.dispatch { init(script) }
                     }
 
                     bindings.forEach { (k, v) ->

@@ -16,6 +16,7 @@ expect class WebEngine(
     onDialog: (DialogData) -> Unit
 ) {
     fun executeJS(script: String)
+    fun addPersistentJS(script: String)
     fun bind(name: String, block: (String) -> String)
     fun loadUrl(url: String)
 }
