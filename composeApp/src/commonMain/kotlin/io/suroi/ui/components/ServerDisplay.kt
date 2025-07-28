@@ -1,5 +1,6 @@
 package io.suroi.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -21,9 +22,9 @@ import io.suroi.ServerInfo
 import io.suroi.getServerInfo
 import io.suroi.ui.theme.*
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
-import suroi.composeapp.generated.resources.Res
-import suroi.composeapp.generated.resources.play
+import suroi.composeapp.generated.resources.*
 
 @Composable
 fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
@@ -74,7 +75,11 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                 .fillMaxWidth()
 
         ) {
-            Spacer(modifier = Modifier.height(96.dp))
+            Image(
+                painter = painterResource(gameModeIcon(serverInfo.mode)),
+                contentDescription = null,
+                modifier = Modifier.size(160.dp).padding(16.dp)
+            )
             Text(
                 text = humanReadableRegion(region),
                 color = White,
@@ -141,5 +146,17 @@ fun humanReadableRegion(region: String): String {
         "ea1v1" -> "1v1 East Asia"
         "test" -> "Test"
         else -> "Unknown"
+    }
+}
+
+fun gameModeIcon(mode: String): DrawableResource {
+    return when (mode) {
+        "fall" -> Res.drawable.pumpkin
+        "hunted" -> Res.drawable.lmroy
+        "infection" -> Res.drawable.infected
+        "halloween" -> Res.drawable.jack_o_lantern
+        "winter" -> Res.drawable.red_gift
+        else -> Res.drawable.normal_icon
+
     }
 }
