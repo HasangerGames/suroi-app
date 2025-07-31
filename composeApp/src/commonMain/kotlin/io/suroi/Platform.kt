@@ -3,6 +3,7 @@ package io.suroi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import io.suroi.ui.components.DialogData
+import org.jetbrains.compose.resources.DrawableResource
 
 @Composable
 expect fun WebFrame(
@@ -24,3 +25,11 @@ expect class WebEngine(
 
 
 expect fun getDeviceLanguage(): String
+
+@Composable
+expect fun SVGImage(
+    uri: String,
+    resource: DrawableResource,
+    description: String,
+    modifier: Modifier = Modifier
+)

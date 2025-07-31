@@ -35,6 +35,7 @@ datastore-preferences = { module = "androidx.datastore:datastore-preferences", v
 
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil"}
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil"}
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil"}
 
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

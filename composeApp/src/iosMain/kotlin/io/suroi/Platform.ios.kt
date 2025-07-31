@@ -7,6 +7,7 @@ import androidx.compose.ui.viewinterop.UIKitView
 import io.suroi.ui.components.DialogData
 import io.suroi.ui.components.DialogType
 import kotlinx.cinterop.ExperimentalForeignApi
+import org.jetbrains.compose.resources.DrawableResource
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.*
 import platform.UIKit.UIApplication
@@ -159,4 +160,13 @@ actual class WebEngine actual constructor(
 
 actual fun getDeviceLanguage(): String {
     return NSLocale.currentLocale.languageCode
+}
+
+@Composable
+actual fun SVGImage(
+    uri: String,
+    resource: DrawableResource,
+    description: String,
+    modifier: Modifier
+) {
 }

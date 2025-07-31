@@ -23,7 +23,7 @@ fun ktorClient(): HttpClient {
 data class ServerInfo(
     val playerCount: Int = 0,
     val teamMode: Int = 0,
-    val mode: String = "Unknown"
+    val mode: String = "unknown"
 )
 suspend fun getServerInfo(client: HttpClient, url: String): ServerInfo {
     try {

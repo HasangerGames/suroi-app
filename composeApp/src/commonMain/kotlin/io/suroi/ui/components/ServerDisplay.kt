@@ -1,15 +1,15 @@
 package io.suroi.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -18,23 +18,25 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.ktor.client.*
+import io.suroi.SVGImage
 import io.suroi.ServerInfo
 import io.suroi.getServerInfo
 import io.suroi.ui.theme.*
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.painterResource
 import suroi.composeapp.generated.resources.*
 
 @Composable
 fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
-    val scope = rememberCoroutineScope()
     var serverInfo by remember { mutableStateOf(ServerInfo()) }
-    scope.launch {
+    var loadingModeImage by remember { mutableStateOf(true) }
+    LaunchedEffect(region) {
         try {
-        serverInfo = getServerInfo(httpClient, "https://$region.suroi.io/api/serverInfo")
+            loadingModeImage = true
+            serverInfo = getServerInfo(httpClient, "https://$region.suroi.io/api/serverInfo")
         } catch (e: Exception) {
             println(e.toString())
+        } finally {
+            loadingModeImage = false
         }
     }
     Box(
@@ -49,7 +51,7 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
     ) {
         AsyncImage(
             model = "https://suroi.io/img/backgrounds/menu/${serverInfo.mode}.png",
-            contentDescription = null,
+            contentDescription = "Game mode background",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .matchParentSize()
@@ -75,11 +77,25 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                 .fillMaxWidth()
 
         ) {
-            Image(
-                painter = painterResource(gameModeIcon(serverInfo.mode)),
-                contentDescription = null,
-                modifier = Modifier.size(160.dp).padding(16.dp)
-            )
+            if (loadingModeImage) {
+                Box(
+                    modifier = Modifier.size(128.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = White,
+                        strokeWidth = 4.dp,
+                        modifier = Modifier.padding(24.dp).size(200.dp)
+                    )
+                }
+            } else {
+                SVGImage(
+                    uri = getModeSVGUri(serverInfo.mode),
+                    resource = gameModeImage(serverInfo.mode),
+                    description = "Game mode icon",
+                    modifier = Modifier.padding(8.dp).size(160.dp)
+                )
+            }
             Text(
                 text = humanReadableRegion(region),
                 color = White,
@@ -88,7 +104,7 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "${serverInfo.playerCount} players · ${serverInfo.mode.replaceFirstChar { it.titlecase() }} · ${
+                text = "${serverInfo.playerCount} players · ${serverInfo.mode.replaceFirstChar { it.titlecase() }} · ${
                     humanReadableTeamMode(
                         serverInfo.teamMode
                     )
@@ -104,20 +120,31 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(containerColor = White),
                     contentPadding = ButtonDefaults.ButtonWithIconContentPadding
                 ) {
-                    Icon(
-                        painter = painterResource(Res.drawable.play),
-                        contentDescription = "Play",
-                        tint = Dark,
+                    SVGImage(
+                        uri = Res.getUri("drawable/play.svg"),
+                        resource = Res.drawable.play,
+                        description = "Play",
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Play", color = Dark, style = suroiTypography().titleMedium)
+                    Text(
+                        "Play",
+                        color = Dark,
+                        style = suroiTypography().titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Button(
                     onClick = { },
                     colors = ButtonDefaults.buttonColors(containerColor = Gray.copy(alpha = 0.7f)),
                 ) {
-                    Text("Server info", color = White, style = suroiTypography().titleMedium)
+                    Text(
+                        "Server info",
+                        color = White,
+                        style = suroiTypography().titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
             }
         }
@@ -144,19 +171,25 @@ fun humanReadableRegion(region: String): String {
         "oc" -> "Oceania"
         "1v1" -> "1v1 North America"
         "ea1v1" -> "1v1 East Asia"
-        "test" -> "Test"
+        "test" -> "Test Server"
         else -> "Unknown"
     }
 }
 
-fun gameModeIcon(mode: String): DrawableResource {
+fun gameModeImage(mode: String): DrawableResource {
     return when (mode) {
-        "fall" -> Res.drawable.pumpkin
-        "hunted" -> Res.drawable.lmroy
-        "infection" -> Res.drawable.infected
-        "halloween" -> Res.drawable.jack_o_lantern
-        "winter" -> Res.drawable.red_gift
-        else -> Res.drawable.normal_icon
-
+        "birthday" -> Res.drawable.birthday
+        "fall" -> Res.drawable.fall
+        "halloween" -> Res.drawable.halloween
+        "hunted" -> Res.drawable.hunted
+        "infection" -> Res.drawable.infection
+        "normal" -> Res.drawable.normal
+        "winter" -> Res.drawable.winter
+        else -> Res.drawable.normal
     }
+}
+
+fun getModeSVGUri(mode: String): String {
+    val validModes = setOf("birthday", "fall", "halloween", "hunted", "infection", "normal", "winter")
+    return Res.getUri("drawable/${if (mode in validModes) mode else "normal"}.svg")
 }

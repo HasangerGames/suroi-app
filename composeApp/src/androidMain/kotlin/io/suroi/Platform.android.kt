@@ -8,8 +8,10 @@ import android.webkit.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import coil3.compose.AsyncImage
 import io.suroi.ui.components.DialogData
 import io.suroi.ui.components.DialogType
+import org.jetbrains.compose.resources.DrawableResource
 import java.util.*
 
 @Composable
@@ -202,4 +204,18 @@ actual class WebEngine actual constructor(
 
 actual fun getDeviceLanguage(): String {
     return Locale.getDefault().language
+}
+
+@Composable
+actual fun SVGImage(
+    uri: String,
+    resource: DrawableResource,
+    description: String,
+    modifier: Modifier
+) {
+    AsyncImage(
+        model = uri,
+        contentDescription = description,
+        modifier = modifier,
+    )
 }

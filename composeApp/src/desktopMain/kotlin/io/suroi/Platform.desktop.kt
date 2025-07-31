@@ -1,5 +1,6 @@
 package io.suroi
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -9,6 +10,8 @@ import com.github.winterreisender.webviewko.WebviewKo
 import com.sun.jna.Native
 import com.sun.jna.ptr.PointerByReference
 import io.suroi.ui.components.DialogData
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import java.awt.Canvas
 import java.awt.Graphics
 import java.awt.GraphicsEnvironment
@@ -98,4 +101,18 @@ actual class WebEngine actual constructor(
 
 actual fun getDeviceLanguage(): String {
     return Locale.getDefault().language
+}
+
+@Composable
+actual fun SVGImage(
+    uri: String,
+    resource: DrawableResource,
+    description: String,
+    modifier: Modifier
+) {
+    Image(
+        painter = painterResource(resource),
+        contentDescription = description,
+        modifier = modifier
+    )
 }
