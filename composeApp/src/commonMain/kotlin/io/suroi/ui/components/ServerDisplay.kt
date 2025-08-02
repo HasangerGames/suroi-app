@@ -45,12 +45,13 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
             .clip(RoundedCornerShape(24.dp))
             .border(
                 width = 3.dp,
-                color = White.copy(alpha = 0.2f),
+                color = White.copy(alpha = 0.3f),
                 shape = RoundedCornerShape(24.dp)
             )
     ) {
+        val gamemode = serverInfo.mode
         AsyncImage(
-            model = "https://suroi.io/img/backgrounds/menu/${serverInfo.mode}.png",
+            model = "https://suroi.io/img/backgrounds/menu/$gamemode.png",
             contentDescription = "Game mode background",
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -79,20 +80,20 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
         ) {
             if (loadingModeImage) {
                 Box(
-                    modifier = Modifier.size(128.dp),
+                    modifier = Modifier.padding(8.dp).size(160.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     CircularProgressIndicator(
                         color = White,
                         strokeWidth = 4.dp,
-                        modifier = Modifier.padding(24.dp).size(200.dp)
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             } else {
                 SVGImage(
-                    uri = getModeSVGUri(serverInfo.mode),
-                    resource = gameModeImage(serverInfo.mode),
-                    description = "Game mode icon",
+                    uri = Res.getUri("drawable/mode_$gamemode.svg"),
+                    resource = gameModeImage(gamemode),
+                    description = "$gamemode icon",
                     modifier = Modifier.padding(8.dp).size(160.dp)
                 )
             }
@@ -104,7 +105,7 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${serverInfo.playerCount} players · ${serverInfo.mode.replaceFirstChar { it.titlecase() }} · ${
+                text = "${serverInfo.playerCount} players · ${gamemode.replaceFirstChar { it.titlecase() }} · ${
                     humanReadableTeamMode(
                         serverInfo.teamMode
                     )
@@ -178,18 +179,13 @@ fun humanReadableRegion(region: String): String {
 
 fun gameModeImage(mode: String): DrawableResource {
     return when (mode) {
-        "birthday" -> Res.drawable.birthday
-        "fall" -> Res.drawable.fall
-        "halloween" -> Res.drawable.halloween
-        "hunted" -> Res.drawable.hunted
-        "infection" -> Res.drawable.infection
-        "normal" -> Res.drawable.normal
-        "winter" -> Res.drawable.winter
-        else -> Res.drawable.normal
+        "birthday" -> Res.drawable.mode_birthday
+        "fall" -> Res.drawable.mode_fall
+        "halloween" -> Res.drawable.mode_halloween
+        "hunted" -> Res.drawable.mode_hunted
+        "infection" -> Res.drawable.mode_infection
+        "normal" -> Res.drawable.mode_normal
+        "winter" -> Res.drawable.mode_winter
+        else -> Res.drawable.mode_unknown
     }
-}
-
-fun getModeSVGUri(mode: String): String {
-    val validModes = setOf("birthday", "fall", "halloween", "hunted", "infection", "normal", "winter")
-    return Res.getUri("drawable/${if (mode in validModes) mode else "normal"}.svg")
 }
