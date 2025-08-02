@@ -3,13 +3,11 @@ package io.suroi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import io.suroi.navigation.Screen
 import io.suroi.ui.components.GameScreen
@@ -21,9 +19,9 @@ fun App(
     datastore: DataStore<Preferences>,
 ) {
     val navController = rememberNavController()
+    val httpClient = ktorClient()
     SuroiTheme {
         Scaffold { innerPadding ->
-
             NavHost(navController, startDestination = Screen.Main.route, modifier = Modifier.padding(innerPadding)) {
                 composable(Screen.Main.route) {
                     ServerListScreen(
@@ -31,7 +29,8 @@ fun App(
                         onPlay = { region ->
                             navController.navigate(Screen.Game.play("suroi.io", region))
                         },
-                        navController = navController
+                        navController = navController,
+                        httpClient = httpClient,
                     )
                 }
                 composable(Screen.Duel.route) {
@@ -47,7 +46,8 @@ fun App(
                                 }
                             ))
                         },
-                        navController = navController
+                        navController = navController,
+                        httpClient = httpClient,
                     )
                 }
                 composable(Screen.Test.route) {
@@ -56,7 +56,8 @@ fun App(
                         onPlay = { region ->
                             navController.navigate(Screen.Game.play("test.suroi.io", region))
                         },
-                        navController = navController
+                        navController = navController,
+                        httpClient = httpClient,
                     )
                 }
                 composable(Screen.Game.route) { backStackEntry ->

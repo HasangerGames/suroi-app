@@ -26,11 +26,7 @@ data class ServerInfo(
     val mode: String = "unknown"
 )
 suspend fun getServerInfo(client: HttpClient, url: String): ServerInfo {
-    try {
-        return client.get(url).body()
-    } finally {
-        client.close()
-    }
+    return client.get(url).body()
 }
 
 suspend fun isOnline(): Boolean {
