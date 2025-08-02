@@ -8,8 +8,15 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
+import platform.UIKit.UIApplication
+import platform.UIKit.UIStatusBarAnimation
+import platform.UIKit.setStatusBarHidden
 
 fun MainViewController() = ComposeUIViewController {
+    UIApplication.sharedApplication.setStatusBarHidden(
+        true,
+        UIStatusBarAnimation.UIStatusBarAnimationNone
+    )
     App(
         datastore = remember {
             createDataStore {

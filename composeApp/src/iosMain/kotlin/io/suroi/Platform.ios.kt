@@ -1,5 +1,6 @@
 package io.suroi
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,6 +9,7 @@ import io.suroi.ui.components.DialogData
 import io.suroi.ui.components.DialogType
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import platform.CoreGraphics.CGRectMake
 import platform.Foundation.*
 import platform.UIKit.UIApplication
@@ -169,4 +171,9 @@ actual fun SVGImage(
     description: String,
     modifier: Modifier
 ) {
+    Image(
+        painter = painterResource(resource),
+        contentDescription = description,
+        modifier = modifier
+    )
 }
