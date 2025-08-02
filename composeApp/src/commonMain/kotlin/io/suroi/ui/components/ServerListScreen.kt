@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import io.suroi.ktorClient
 import io.suroi.ui.theme.Black
 
@@ -17,7 +18,8 @@ import io.suroi.ui.theme.Black
 fun ServerListScreen(
     regions: List<String>,
     // datastore: DataStore<Preferences>,
-    onPlay: (region: String) -> Unit
+    onPlay: (region: String) -> Unit,
+    navController: NavController
 ) {
     val client = ktorClient()
     val scrollState = rememberScrollState()
@@ -28,6 +30,7 @@ fun ServerListScreen(
                 .verticalScroll(scrollState)
                 .padding(vertical = 12.dp)
         ) {
+            TabBar(navController = navController)
             for (region in regions) {
                 ServerDisplay(
                     httpClient = client,
