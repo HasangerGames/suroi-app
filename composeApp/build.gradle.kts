@@ -126,11 +126,21 @@ compose.desktop {
         if (System.getProperty("os.name").contains("Mac")) {
             jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
             jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+            jvmArgs("-Xdock:icon=${project.file("appIcons/favicon.icns").absolutePath}")
         }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.suroi"
+            packageName = "Suroi"
             packageVersion = "1.0.0"
+            windows {
+                iconFile.set(project.file("appIcons/favicon.ico"))
+            }
+            macOS {
+                iconFile.set(project.file("appIcons/favicon.icns"))
+            }
+            linux {
+                iconFile.set(project.file("appIcons/favicon.png"))
+            }
         }
     }
 }
