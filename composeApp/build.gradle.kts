@@ -78,7 +78,7 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.ktor.client.cio)
-            implementation(libs.webviewko)
+            implementation(libs.jcef)
         }
 
         commonTest.dependencies {
@@ -121,6 +121,12 @@ dependencies {
 compose.desktop {
     application {
         mainClass = "io.suroi.MainKt"
+        jvmArgs("--add-opens", "java.desktop/sun.awt=ALL-UNNAMED")
+        jvmArgs("--add-opens", "java.desktop/java.awt.peer=ALL-UNNAMED")
+        if (System.getProperty("os.name").contains("Mac")) {
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt=ALL-UNNAMED")
+            jvmArgs("--add-opens", "java.desktop/sun.lwawt.macosx=ALL-UNNAMED")
+        }
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "io.suroi"
