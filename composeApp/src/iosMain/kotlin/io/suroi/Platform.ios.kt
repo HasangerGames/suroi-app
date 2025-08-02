@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.viewinterop.UIKitView
 import io.suroi.ui.components.DialogData
 import io.suroi.ui.components.DialogType
@@ -169,11 +171,13 @@ actual fun SVGImage(
     uri: String,
     resource: DrawableResource,
     description: String,
-    modifier: Modifier
+    modifier: Modifier,
+    color: Color?
 ) {
     Image(
         painter = painterResource(resource),
         contentDescription = description,
-        modifier = modifier
+        modifier = modifier,
+        colorFilter = color?.let { ColorFilter.tint(color) }
     )
 }

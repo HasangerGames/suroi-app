@@ -7,6 +7,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import io.suroi.ui.components.DialogData
 import me.friwi.jcefmaven.CefAppBuilder
 import me.friwi.jcefmaven.MavenCefAppHandlerAdapter
@@ -250,12 +252,14 @@ actual fun SVGImage(
     uri: String,
     resource: DrawableResource,
     description: String,
-    modifier: Modifier
+    modifier: Modifier,
+    color: Color?
 ) {
     Image(
         painter = painterResource(resource),
         contentDescription = description,
-        modifier = modifier
+        modifier = modifier,
+        colorFilter = color?.let { ColorFilter.tint(color) }
     )
 }
 

@@ -3,6 +3,7 @@ package io.suroi.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -12,10 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import io.suroi.SVGImage
 import io.suroi.navigation.Screen
 import io.suroi.ui.theme.Black
 import io.suroi.ui.theme.White
 import io.suroi.ui.theme.suroiTypography
+import org.jetbrains.compose.resources.DrawableResource
+import suroi.composeapp.generated.resources.Res
+import suroi.composeapp.generated.resources.tab_1v1
+import suroi.composeapp.generated.resources.tab_main
+import suroi.composeapp.generated.resources.tab_test
 
 @Composable
 fun TabBar(navController: NavController) {
@@ -56,14 +63,36 @@ fun TabBar(navController: NavController) {
                     }
                 },
                 selectedContentColor = White,
-                text = {
-                    Text(
-                        text = title,
-                        style = suroiTypography().titleLarge,
-                        color = textColor,
-                    )
+                content = {
+                    androidx.compose.foundation.layout.Row(
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    ) {
+                        SVGImage(
+                            uri = Res.getUri("drawable/tab_${screen.route}.svg"),
+                            resource = tabIcon(screen.route),
+                            description = "$title tab icon",
+                            modifier = Modifier.size(24.dp),
+                            color = textColor
+                        )
+                        Text(
+                            text = title,
+                            style = suroiTypography().titleMedium,
+                            color = textColor,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
                 }
             )
         }
+    }
+}
+
+fun tabIcon(tab: String): DrawableResource {
+    return when (tab) {
+        "main" -> Res.drawable.tab_main
+        "test" -> Res.drawable.tab_test
+        "1v1" -> Res.drawable.tab_1v1
+        else -> Res.drawable.tab_main
     }
 }

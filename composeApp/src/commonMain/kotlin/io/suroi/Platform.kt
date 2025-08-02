@@ -2,6 +2,7 @@ package io.suroi
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import io.suroi.ui.components.DialogData
 import org.jetbrains.compose.resources.DrawableResource
 
@@ -31,5 +32,6 @@ expect fun SVGImage(
     uri: String,
     resource: DrawableResource,
     description: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    color: Color? = null
 )

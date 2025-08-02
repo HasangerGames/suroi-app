@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.webkit.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.viewinterop.AndroidView
 import coil3.compose.AsyncImage
 import io.suroi.ui.components.DialogData
@@ -211,11 +213,13 @@ actual fun SVGImage(
     uri: String,
     resource: DrawableResource,
     description: String,
-    modifier: Modifier
+    modifier: Modifier,
+    color: Color?
 ) {
     AsyncImage(
         model = uri,
         contentDescription = description,
         modifier = modifier,
+        colorFilter = color?.let { ColorFilter.tint(color) }
     )
 }
