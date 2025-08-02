@@ -14,8 +14,7 @@ fun main() = application {
         onCloseRequest = ::exitApplication,
         icon = painterResource(Res.drawable.icon),
         title = "Suroi",
-        state = WindowState(placement = WindowPlacement.Maximized),
-        undecorated = true,
+        state = WindowState(placement = WindowPlacement.Fullscreen),
     ) {
         App(
             datastore = datastore
