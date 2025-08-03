@@ -55,6 +55,12 @@ fun GameScreen(
         }
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            webEngine.destroy()
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         WebFrame(
             modifier = Modifier.fillMaxWidth(),

@@ -21,6 +21,7 @@ expect class WebEngine(
     fun addPersistentJS(script: String)
     fun bind(name: String, block: (String) -> String)
     fun loadUrl(url: String)
+    fun destroy()
 }
 
 

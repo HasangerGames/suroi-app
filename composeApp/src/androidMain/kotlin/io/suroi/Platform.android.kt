@@ -2,6 +2,7 @@ package io.suroi
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Build
 import android.view.ViewGroup
 import android.webkit.*
@@ -59,6 +60,12 @@ actual class WebEngine actual constructor(
             )
 
             webViewClient = object : WebViewClient() {
+                override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                    super.onPageStarted(view, url, favicon)
+                    persistentScripts.forEach { script ->
+                        view?.evaluateJavascript(script, null)
+                    }
+                }
                 override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                     val newURL = request.url.toString()
                     if (!newURL.contains("suroi.io")) {
@@ -194,13 +201,23 @@ actual class WebEngine actual constructor(
 
     actual fun bind(name: String, block: (String) -> String) {
         bindings[name] = block
-        addPersistentJS("window['$name'] = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };")
+        addPersistentJS("window.$name = function(data) { kotlinBridge.postMessage('$name', JSON.stringify(data)); };")
     }
 
     actual fun loadUrl(url: String) {
         androidWebView?.post {
             androidWebView?.loadUrl(url)
         }
+    }
+
+    actual fun destroy() {
+        androidWebView?.apply {
+            stopLoading()
+            clearHistory()
+            removeAllViews()
+            destroy()
+        }
+        androidWebView = null
     }
 }
 

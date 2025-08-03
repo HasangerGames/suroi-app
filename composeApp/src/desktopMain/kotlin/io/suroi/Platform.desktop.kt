@@ -232,7 +232,8 @@ actual class WebEngine actual constructor(
     }
     val component: Component
         get() = browser?.uiComponent ?: throw IllegalStateException("Browser not initialized")
-    fun dispose() {
+
+    actual fun destroy() {
         browser?.let { br ->
             client?.removeMessageRouter(messageRouter)
             br.close(true)

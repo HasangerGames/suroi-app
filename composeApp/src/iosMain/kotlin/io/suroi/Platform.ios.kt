@@ -82,6 +82,17 @@ actual class WebEngine actual constructor(
         wkWebView.loadRequest(request)
     }
 
+    actual fun destroy() {
+        bindings.clear()
+        userContentController.removeAllUserScripts()
+        for (key in userContentController.userScripts.mapNotNull { it as? WKUserScript }) {
+            userContentController.removeScriptMessageHandlerForName(key.source)
+        }
+        wkWebView.stopLoading()
+        wkWebView.navigationDelegate = null
+        wkWebView.UIDelegate = null
+    }
+
     override fun userContentController(
         userContentController: WKUserContentController,
         didReceiveScriptMessage: WKScriptMessage
