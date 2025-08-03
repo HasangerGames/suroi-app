@@ -1,12 +1,15 @@
 package io.suroi.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -34,7 +37,16 @@ fun TabBar(navController: NavController) {
         selectedTabIndex = selectedTabIndex,
         divider = {},
         containerColor = Black,
-        modifier = Modifier.padding(4.dp).fillMaxWidth()
+        modifier = Modifier.padding(4.dp).fillMaxWidth(),
+        indicator = { tabPositions ->
+            val tabPosition = tabPositions[selectedTabIndex]
+            Box(
+                Modifier
+                    .tabIndicatorOffset(tabPosition)
+                    .height(3.dp)
+                    .background(color = White, shape = RoundedCornerShape(4.dp))
+            )
+        }
     ) {
         items.forEachIndexed { index, screen ->
             val title = when (screen) {
