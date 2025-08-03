@@ -21,7 +21,20 @@ import io.suroi.ui.theme.DarkGray
 import io.suroi.ui.theme.DarkTransparent
 import io.suroi.ui.theme.Orange
 import io.suroi.ui.theme.White
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import suroi.composeapp.generated.resources.Res
+import suroi.composeapp.generated.resources.dialog_alert_title
+import suroi.composeapp.generated.resources.dialog_auth_password
+import suroi.composeapp.generated.resources.dialog_auth_title
+import suroi.composeapp.generated.resources.dialog_auth_username
+import suroi.composeapp.generated.resources.dialog_button_cancel
+import suroi.composeapp.generated.resources.dialog_button_ok
+import suroi.composeapp.generated.resources.dialog_button_reload
+import suroi.composeapp.generated.resources.dialog_confirm_title
+import suroi.composeapp.generated.resources.dialog_prompt_title
+import suroi.composeapp.generated.resources.dialog_unload_default_message
+import suroi.composeapp.generated.resources.dialog_unload_title
 
 enum class DialogType {
     Alert,
@@ -68,7 +81,13 @@ fun Dialog(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = data.title,
+                    text = when (data.type) {
+                        DialogType.Alert -> stringResource(Res.string.dialog_alert_title)
+                        DialogType.Confirm -> stringResource(Res.string.dialog_confirm_title)
+                        DialogType.Prompt -> stringResource(Res.string.dialog_prompt_title)
+                        DialogType.Unload -> stringResource(Res.string.dialog_unload_title)
+                        DialogType.Auth -> stringResource(Res.string.dialog_auth_title)
+                    },
                     style = TextStyle(
                         color = White,
                         fontSize = 24.sp,
@@ -79,7 +98,13 @@ fun Dialog(
                 )
 
                 Text(
-                    text = data.message,
+                    text = data.message.ifEmpty {
+                        if (data.type == DialogType.Unload) {
+                            stringResource(Res.string.dialog_unload_default_message)
+                        } else {
+                            ""
+                        }
+                    },
                     style = TextStyle(
                         color = White.copy(alpha = 0.5f),
                         fontSize = 14.sp
@@ -121,7 +146,12 @@ fun Dialog(
                     Spacer(modifier = Modifier.height(16.dp))
                 } else if(data.type == DialogType.Auth) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Username", modifier = Modifier.padding(end = 12.dp), color = White, fontWeight = FontWeight.Medium)
+                        Text(
+                            text = stringResource(Res.string.dialog_auth_username),
+                            modifier = Modifier.padding(end = 12.dp),
+                            color = White,
+                            fontWeight = FontWeight.Medium
+                        )
                         LoginField(
                             value = username,
                             onValueChange = { username = it },
@@ -131,7 +161,12 @@ fun Dialog(
                     }
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Password", modifier = Modifier.padding(end = 12.dp), color = White, fontWeight = FontWeight.Medium)
+                        Text(
+                            text = stringResource(Res.string.dialog_auth_password),
+                            modifier = Modifier.padding(end = 12.dp),
+                            color = White,
+                            fontWeight = FontWeight.Medium
+                        )
                         LoginField(
                             value = password,
                             onValueChange = { password = it },
@@ -166,7 +201,11 @@ fun Dialog(
                         border = BorderStroke(2.dp, Orange)
                     ) {
                         Text(
-                            if (data.type == DialogType.Unload) "Reload" else "OK",
+                            if (data.type == DialogType.Unload) {
+                                stringResource(Res.string.dialog_button_reload)
+                            } else {
+                                stringResource(Res.string.dialog_button_ok)
+                            },
                             style = TextStyle(fontSize = 14.sp))
                     }
 
@@ -180,7 +219,10 @@ fun Dialog(
                             shape = RoundedCornerShape(20.dp),
                             border = BorderStroke(2.dp, Orange)
                         ) {
-                            Text("Cancel", style = TextStyle(fontSize = 14.sp))
+                            Text(
+                                text = stringResource(Res.string.dialog_button_cancel),
+                                style = TextStyle(fontSize = 14.sp)
+                            )
                         }
 
                     }

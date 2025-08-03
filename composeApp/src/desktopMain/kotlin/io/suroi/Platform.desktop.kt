@@ -252,13 +252,12 @@ actual fun getDeviceLanguage(): String {
 actual fun SVGImage(
     uri: String,
     resource: DrawableResource,
-    description: String,
     modifier: Modifier,
     color: Color?
 ) {
     Image(
         painter = painterResource(resource),
-        contentDescription = description,
+        contentDescription = null,
         modifier = modifier,
         colorFilter = color?.let { ColorFilter.tint(color) }
     )

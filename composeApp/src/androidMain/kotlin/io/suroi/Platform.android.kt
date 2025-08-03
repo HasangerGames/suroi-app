@@ -109,7 +109,7 @@ actual class WebEngine actual constructor(
                     } else {
                         onDialog(DialogData(
                             type = DialogType.Auth,
-                            title = "Sign in",
+                            title = "", // Will be handled by Dialog composable
                             message = "$realm",
                             onConfirm = { inputUsername, inputPassword ->
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -134,7 +134,7 @@ actual class WebEngine actual constructor(
                 override fun onJsAlert(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
                     onDialog(DialogData(
                         DialogType.Alert,
-                        "Alert",
+                        "",
                         m ?: "",
                         "",
                         { _, _ -> r?.confirm()  },
@@ -146,7 +146,7 @@ actual class WebEngine actual constructor(
                 override fun onJsConfirm(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
                     onDialog(DialogData(
                         DialogType.Confirm,
-                        "Confirm",
+                        "",
                         m ?: "",
                         "",
                         { _, _ -> r?.confirm() },
@@ -158,7 +158,7 @@ actual class WebEngine actual constructor(
                 override fun onJsPrompt(v: WebView?, u: String?, m: String?, d: String?, r: JsPromptResult?): Boolean {
                     onDialog(DialogData(
                         DialogType.Prompt,
-                        "Prompt",
+                        "",
                         m ?: "",
                         d ?: "",
                         { i, _ -> if (i != null) r?.confirm(i) else r?.cancel() },
@@ -169,8 +169,8 @@ actual class WebEngine actual constructor(
                 override fun onJsBeforeUnload(v: WebView?, u: String?, m: String?, r: JsResult?): Boolean {
                     onDialog(DialogData(
                         DialogType.Unload,
-                        "Leave page?",
-                        m ?: "Changes you made may not be saved.",
+                        "",
+                        m ?: "",
                         "",
                         { _, _ -> r?.confirm() },
                         { r?.cancel() },
@@ -229,13 +229,12 @@ actual fun getDeviceLanguage(): String {
 actual fun SVGImage(
     uri: String,
     resource: DrawableResource,
-    description: String,
     modifier: Modifier,
     color: Color?
 ) {
     AsyncImage(
         model = uri,
-        contentDescription = description,
+        contentDescription = null,
         modifier = modifier,
         colorFilter = color?.let { ColorFilter.tint(color) }
     )

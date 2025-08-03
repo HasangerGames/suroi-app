@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Suroi</string>
+
+    <string name="unknown">Unknown</string>
+
+    <string name="dialog_alert_title">Alert</string>
+    <string name="dialog_confirm_title">Confirm</string>
+    <string name="dialog_prompt_title">Prompt</string>
+    <string name="dialog_auth_title">Sign in</string>
+    <string name="dialog_unload_title">Leave page?</string>
+    <string name="dialog_unload_default_message">Changes you made may not be saved.</string>
+    <string name="dialog_button_ok">OK</string>
+    <string name="dialog_button_cancel">Cancel</string>
+    <string name="dialog_button_reload">Reload</string>
+    <string name="dialog_auth_username">Username</string>
+    <string name="dialog_auth_password">Password</string>
+
+    <!-- tab bar -->
+    <string name="tab_main">Main</string>
+    <string name="tab_1v1">1v1</string>
+    <string name="tab_test">Test</string>
+
+    <!-- server display -->
+    <string name="server_details">%1$d players · %2$s · %3$s</string>
+    <string name="button_play">Play</string>
+    <string name="button_server_info">Server info</string>
+
+    <!-- team modes -->
+    <string name="team_mode_solo">Solo</string>
+    <string name="team_mode_duos">Duos</string>
+    <string name="team_mode_squads">Squads</string>
+    <string name="team_mode_unknown">Unknown</string>
+
+    <!-- regions -->
+    <string name="region_na">North America</string>
+    <string name="region_sa">South America</string>
+    <string name="region_eu">Europe</string>
+    <string name="region_as">Asia</string>
+    <string name="region_ea">East Asia</string>
+    <string name="region_oc">Oceania</string>
+    <string name="region_1v1">North America 1v1</string>
+    <string name="region_ea1v1">East Asia 1v1</string>
+    <string name="region_test">Test Server</string>
+
+    <!-- game modes -->
+    <string name="gamemode_birthday">Birthday</string>
+    <string name="gamemode_fall">Harvest</string>
+    <string name="gamemode_halloween">Halloween</string>
+    <string name="gamemode_hunted">Hunted</string>
+    <string name="gamemode_infection">Infection</string>
+    <string name="gamemode_normal">Normal</string>
+    <string name="gamemode_winter">Winter</string>
+</resources>

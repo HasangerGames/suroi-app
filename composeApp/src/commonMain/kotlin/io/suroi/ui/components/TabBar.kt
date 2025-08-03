@@ -22,10 +22,12 @@ import io.suroi.ui.theme.Black
 import io.suroi.ui.theme.White
 import io.suroi.ui.theme.suroiTypography
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.stringResource
 import suroi.composeapp.generated.resources.Res
 import suroi.composeapp.generated.resources.tab_1v1
 import suroi.composeapp.generated.resources.tab_main
 import suroi.composeapp.generated.resources.tab_test
+import suroi.composeapp.generated.resources.unknown
 
 @Composable
 fun TabBar(navController: NavController) {
@@ -50,10 +52,10 @@ fun TabBar(navController: NavController) {
     ) {
         items.forEachIndexed { index, screen ->
             val title = when (screen) {
-                Screen.Main -> "Main"
-                Screen.Duel -> "1v1"
-                Screen.Test -> "Test"
-                else -> "Other"
+                Screen.Main -> stringResource(Res.string.tab_main)
+                Screen.Duel -> stringResource(Res.string.tab_1v1)
+                Screen.Test -> stringResource(Res.string.tab_test)
+                else -> stringResource(Res.string.unknown)
             }
 
             val isSelected = currentRoute == screen.route
@@ -83,7 +85,6 @@ fun TabBar(navController: NavController) {
                         SVGImage(
                             uri = Res.getUri("drawable/tab_${screen.route}.svg"),
                             resource = tabIcon(screen.route),
-                            description = "$title tab icon",
                             modifier = Modifier.size(24.dp),
                             color = textColor
                         )

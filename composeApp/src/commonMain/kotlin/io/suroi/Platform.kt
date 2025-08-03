@@ -32,7 +32,6 @@ expect fun getDeviceLanguage(): String
 expect fun SVGImage(
     uri: String,
     resource: DrawableResource,
-    description: String,
     modifier: Modifier = Modifier,
     color: Color? = null
 )

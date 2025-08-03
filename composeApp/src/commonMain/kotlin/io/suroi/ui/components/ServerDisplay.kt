@@ -23,6 +23,7 @@ import io.suroi.ServerInfo
 import io.suroi.getServerInfo
 import io.suroi.ui.theme.*
 import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.stringResource
 import suroi.composeapp.generated.resources.*
 
 @Composable
@@ -93,7 +94,6 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                 SVGImage(
                     uri = Res.getUri("drawable/mode_$gamemode.svg"),
                     resource = gameModeImage(gamemode),
-                    description = "$gamemode icon",
                     modifier = Modifier.padding(8.dp).size(160.dp)
                 )
             }
@@ -105,11 +105,12 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "${serverInfo.playerCount} players · ${gamemode.replaceFirstChar { it.titlecase() }} · ${
-                    humanReadableTeamMode(
-                        serverInfo.teamMode
-                    )
-                }",
+                text = stringResource(
+                    Res.string.server_details,
+                    serverInfo.playerCount,
+                    humanReadableGameMode(gamemode),
+                    humanReadableTeamMode(serverInfo.teamMode)
+                ),
                 color = White,
                 fontFamily = inter(),
                 style = suroiTypography().titleMedium
@@ -124,12 +125,11 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                     SVGImage(
                         uri = Res.getUri("drawable/play.svg"),
                         resource = Res.drawable.play,
-                        description = "Play",
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        "Play",
+                        stringResource(Res.string.button_play),
                         color = Dark,
                         style = suroiTypography().titleMedium,
                         fontWeight = FontWeight.SemiBold
@@ -141,7 +141,7 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
                     colors = ButtonDefaults.buttonColors(containerColor = Gray.copy(alpha = 0.7f)),
                 ) {
                     Text(
-                        "Server info",
+                        stringResource(Res.string.button_server_info),
                         color = White,
                         style = suroiTypography().titleMedium,
                         fontWeight = FontWeight.SemiBold
@@ -153,27 +153,43 @@ fun ServerDisplay(httpClient: HttpClient, region: String, onPlay: () -> Unit) {
     }
 }
 
+@Composable
 fun humanReadableTeamMode(teamMode: Int): String {
     return when (teamMode) {
-        1 -> "Solo"
-        2 -> "Duos"
-        4 -> "Squads"
-        else -> "Unknown"
+        1 -> stringResource(Res.string.team_mode_solo)
+        2 -> stringResource(Res.string.team_mode_duos)
+        4 -> stringResource(Res.string.team_mode_squads)
+        else -> stringResource(Res.string.unknown)
     }
 }
 
+@Composable
 fun humanReadableRegion(region: String): String {
     return when (region) {
-        "na" -> "North America"
-        "sa" -> "South America"
-        "eu" -> "Europe"
-        "as" -> "Asia"
-        "ea" -> "East Asia"
-        "oc" -> "Oceania"
-        "1v1" -> "1v1 North America"
-        "ea1v1" -> "1v1 East Asia"
-        "test" -> "Test Server"
-        else -> "Unknown"
+        "na" -> stringResource(Res.string.region_na)
+        "sa" -> stringResource(Res.string.region_sa)
+        "eu" -> stringResource(Res.string.region_eu)
+        "as" -> stringResource(Res.string.region_as)
+        "ea" -> stringResource(Res.string.region_ea)
+        "oc" -> stringResource(Res.string.region_oc)
+        "1v1" -> stringResource(Res.string.region_1v1)
+        "ea1v1" -> stringResource(Res.string.region_ea1v1)
+        "test" -> stringResource(Res.string.region_test)
+        else -> stringResource(Res.string.unknown)
+    }
+}
+
+@Composable
+fun humanReadableGameMode(mode: String): String {
+    return when (mode) {
+        "birthday" -> stringResource(Res.string.gamemode_birthday)
+        "fall" -> stringResource(Res.string.gamemode_fall)
+        "halloween" -> stringResource(Res.string.gamemode_halloween)
+        "hunted" -> stringResource(Res.string.gamemode_hunted)
+        "infection" -> stringResource(Res.string.gamemode_infection)
+        "normal" -> stringResource(Res.string.gamemode_normal)
+        "winter" -> stringResource(Res.string.gamemode_winter)
+        else -> stringResource(Res.string.unknown)
     }
 }
 
