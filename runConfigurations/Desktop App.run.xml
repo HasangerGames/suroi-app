@@ -3,7 +3,7 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
-          <entry key="DEVELOPER_DIR" value="/Applications/Xcode.app/Contents/Developer" />
+          <entry key="DEVELOPER_DIR" value="$PROJECT_DIR$/../Downloads/Xcode-beta.app/Contents/Developer" />
         </map>
       </option>
       <option name="executionName" />
