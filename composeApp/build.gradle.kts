@@ -130,7 +130,7 @@ compose.desktop {
             jvmArgs("-Xdock:icon=${project.file("appIcons/favicon.icns").absolutePath}")
         }
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "Suroi"
             packageVersion = "1.0.0"
             windows {
