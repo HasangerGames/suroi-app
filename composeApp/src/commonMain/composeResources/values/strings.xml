@@ -22,9 +22,12 @@
     <string name="tab_test">Test</string>
 
     <!-- server display -->
-    <string name="server_details">%1$d players · %2$s · %3$s</string>
+    <string name="server_details">%1$s players · %2$s · %3$s</string>
     <string name="button_play">Play</string>
     <string name="button_server_info">Server info</string>
+    <string name="info_next_team_mode">Next team mode: %1$s</string>
+    <string name="info_next_game_mode">Next gamemode: %1$s</string>
+    <string name="info_switch_time">Switch time: %1$s</string>
 
     <!-- team modes -->
     <string name="team_mode_solo">Solo</string>
