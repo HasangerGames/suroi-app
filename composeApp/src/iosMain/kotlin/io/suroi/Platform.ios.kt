@@ -163,7 +163,7 @@ actual class WebEngine actual constructor(
         decisionHandler: (WKNavigationActionPolicy) -> Unit
     ) {
         val requestUrl = decidePolicyForNavigationAction.request.URL?.absoluteString
-        if (requestUrl != null && !requestUrl.contains("suroi")) {
+        if (requestUrl != null && !requestUrl.contains("suroi.io")) {
             onURLChange(requestUrl)
             UIApplication.sharedApplication.openURL(decidePolicyForNavigationAction.request.URL!!)
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
