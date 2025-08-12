@@ -165,7 +165,11 @@ actual class WebEngine actual constructor(
         val requestUrl = decidePolicyForNavigationAction.request.URL?.absoluteString
         if (requestUrl != null && !requestUrl.contains("suroi.io")) {
             onURLChange(requestUrl)
-            UIApplication.sharedApplication.openURL(decidePolicyForNavigationAction.request.URL!!)
+            UIApplication.sharedApplication.openURL(NSURL(string = requestUrl), options = mapOf<Any?, Any?>()) {
+                if (!it) {
+                    println("Failed to open URL: $requestUrl")
+                }
+            }
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
             return
         }
